@@ -63,7 +63,7 @@ $plainTranslator = new PlainTranslator('en', 'ru', $translator)
 // Simple parameter
 $translatedPhrase = $plainTranslator->translate('Осталось {number}');
 echo MessageFormatter::formatMessage('ru_RU', $translatedPhrase, ['number' => 25]);
-// -> 'Осталось 25 мест'
+// -> 'Осталось 25'
 
 // Plural forms
 $translatedPhrase = $plainTranslator->translate('Осталось {placeLeft, plural, =0{# мест} one{# место} few{# места} other{# мест}}');
