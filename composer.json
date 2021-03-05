@@ -1,0 +1,52 @@
+{
+    "name": "ali-translator/translator",
+    "description": "Translator",
+    "keywords": [
+        "sli"
+    ],
+    "homepage": "https://sli.su/",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Bohdan Rykhal",
+            "email": "sli@sli.su",
+            "homepage": "https://sli.su/",
+            "role": "Founder"
+        },
+        {
+            "name": "Slayer911",
+            "email": "garolds911@gmail.com"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/ali-translator/translator/issues?state=open",
+        "source": "https://github.com/ali-translator/translator"
+    },
+    "require": {
+        "php": ">=5.6.0",
+        "ext-pdo": "*"
+    },
+    "autoload": {
+        "psr-4": {
+            "ALI\\Translator\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "ALI\\Translator\\Tests\\": "tests/"
+        }
+    },
+    "require-dev": {
+        "symfony/var-dumper": "^5.0",
+        "ext-pdo": "*",
+        "php": ">=7.3.0",
+        "phpunit/phpunit": "^9.0"
+    },
+    "suggest": {
+        "ali-translator/translator-js-integrate": "Integrate this packet to frontend js",
+        "ali-translator/buffered-translation": "Manually pasted text on document for translation, by means of buffering is translated by one approach (helpful for DB sources)",
+        "ali-translator/auto-html-translation": "Parses html document, and translate included texts",
+        "ali-translator/url-template": "Helps on url parameters resolving (as language, country, etc.)"
+    }
+}
