@@ -19,8 +19,8 @@ $originalLanguageAlias = 'en';
 $translationLanguageAlias = 'ru';
 
 $connection = new PDO(SOURCE_MYSQL_DNS, SOURCE_MYSQL_USER, SOURCE_MYSQL_PASSWORD);
-$source = new MySqlSource($this->createPDO(), $originalLanguageAlias);
-$plainTranslator = (new PlainTranslatorFactory())->createPlainTranslator($source,$translationLanguageAlias);
+$source = new MySqlSource($connection, $originalLanguageAlias);
+$plainTranslator = (new PlainTranslatorFactory())->createPlainTranslator($source, $translationLanguageAlias);
 
 $plainTranslator->saveTranslate('Hello','Привет');
 $plainTranslator->translate('Hello'); // -> 'Привет'
@@ -56,6 +56,23 @@ $translator->translate('en', 'ru', 'Hello');
 $plainTranslator = new PlainTranslator('en', 'ru', $translator)
 ```
 
+### Parameters resolving
+```php
+/** @var \ALI\Translator\PlainTranslator\PlainTranslatorInterface $plainTranslator */
+
+// Simple parameter
+$translatedPhrase = $plainTranslator->translate('Осталось {number}');
+echo MessageFormatter::formatMessage('ru_RU', $translatedPhrase, ['number' => 25]);
+// -> 'Осталось 25 мест'
+
+// Plural forms
+$translatedPhrase = $plainTranslator->translate('Осталось {placeLeft, plural, =0{# мест} one{# место} few{# места} other{# мест}}');
+echo MessageFormatter::formatMessage('ru_RU', $translatedPhrase, [
+    'placeLeft' => 1,
+]);
+// -> 'Осталось 1 место'
+```
+
 ### Missing translation catchers
 Packet allow set catchers phrases without translation, which will work after fail `tranlsate` method calling
 
@@ -64,7 +81,7 @@ use ALI\Translator\TranslatorInterface;
 use ALI\Translator\MissingTranslateCatchers\CollectorMissingTranslatesCatcher;
 
 /** @var TranslatorInterface $translator */
-$translator->addMissingTranslationCatchers(function (string $searchPhrase,TranslatorInterface $translator){
+$translator->addMissingTranslationCatchers(function (string $searchPhrase, TranslatorInterface $translator){
     ...
 });
 
@@ -102,7 +119,7 @@ $phraseTranslatorDecorator = new PhraseTranslatorDecorator($translator, $origina
 // For simplifying
 $plainPhraseTranslatorDecorator = new PlainTranslator('en', 'ua', $phraseTranslatorDecorator);
 
-$plainPhraseTranslatorDecorator->saveTranslate('Hello 123 Hi 000','Привіт 123 Хай 000');
+$plainPhraseTranslatorDecorator->saveTranslate('Hello 123 Hi 000', 'Привіт 123 Хай 000');
 // and when translate text with another numbers, you get previous saved translation
 $plainPhraseTranslatorDecorator->translate('Hello 555 Hi 8676');
 // -> 'Привіт 555 Хай 8676'
