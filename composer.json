@@ -41,7 +41,7 @@
         "symfony/var-dumper": "^5.0",
         "ext-pdo": "*",
         "php": ">=7.3.0",
-        "phpunit/phpunit": "^9.0",
+        "phpunit/phpunit": "^9.0"
     },
     "suggest": {
         "ali-translator/translator-js-integrate": "Integrate this packet to frontend js",
