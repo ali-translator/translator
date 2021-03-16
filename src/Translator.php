@@ -82,7 +82,7 @@ class Translator implements TranslatorInterface
      */
     public function translateAll($originalLanguageAlias, $translationLanguageAlias, $phrases)
     {
-        $translatePhrasePacket = new TranslatePhraseCollection();
+        $translatePhrasePacket = new TranslatePhraseCollection($originalLanguageAlias, $translationLanguageAlias);
         if ($originalLanguageAlias === $translationLanguageAlias) {
             foreach ($phrases as $phrase) {
                 $translatePhrasePacket->addTranslate($phrase, null);

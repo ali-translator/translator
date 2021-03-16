@@ -11,16 +11,50 @@ use IteratorAggregate;
 class TranslatePhraseCollection implements IteratorAggregate
 {
     /**
+     * @var string
+     */
+    protected $originalLanguageAlias;
+
+    /**
+     * @var string
+     */
+    protected $translationLanguageAlias;
+
+    /**
      * @var string[]
      */
     private $originalsWithTranslate;
 
     /**
+     * @param string $originalLanguageAlias
+     * @param string $translationLanguageAlias,
      * @param string[] $originalsWithTranslate
      */
-    public function __construct(array $originalsWithTranslate = [])
+    public function __construct(
+        $originalLanguageAlias,
+        $translationLanguageAlias,
+        array $originalsWithTranslate = []
+    )
     {
+        $this->originalLanguageAlias = $originalLanguageAlias;
+        $this->translationLanguageAlias = $translationLanguageAlias;
         $this->originalsWithTranslate = $originalsWithTranslate;
+    }
+
+    /**
+     * @return string
+     */
+    public function getOriginalLanguageAlias()
+    {
+        return $this->originalLanguageAlias;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTranslationLanguageAlias()
+    {
+        return $this->translationLanguageAlias;
     }
 
     /**
@@ -86,7 +120,7 @@ class TranslatePhraseCollection implements IteratorAggregate
         $allTranslatesPhrases = $this->getAll();
         $originalPhrases = array_values($allTranslatesPhrases);
 
-        return new OriginalPhraseCollection($originalPhrases);
+        return new OriginalPhraseCollection($this->getOriginalLanguageAlias(), $originalPhrases);
     }
 
     /**

@@ -18,9 +18,9 @@ class CollectorMissingTranslatesCatcher
     /**
      * @param OriginalPhraseCollection $originalPhrasePacket
      */
-    public function __construct(OriginalPhraseCollection $originalPhrasePacket = null)
+    public function __construct(OriginalPhraseCollection $originalPhrasePacket)
     {
-        $this->originalPhraseCollection = $originalPhrasePacket ?: new OriginalPhraseCollection();
+        $this->originalPhraseCollection = $originalPhrasePacket;
     }
 
     /**

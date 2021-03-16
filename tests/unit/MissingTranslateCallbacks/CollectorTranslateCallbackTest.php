@@ -1,5 +1,6 @@
 <?php
 
+use ALI\Translator\PhraseCollection\OriginalPhraseCollection;
 use ALI\Translator\Tests\components\Factories\LanguagesEnum;
 use ALI\Translator\Tests\components\Factories\SourceFactory;
 use ALI\Translator\MissingTranslateCatchers\CollectorMissingTranslatesCatcher;
@@ -25,7 +26,8 @@ class CollectorTranslateCallbackTest extends TestCase
             $currentLanguageAlias = LanguagesEnum::TRANSLATION_LANGUAGE_ALIAS;
             $translator = (new PlainTranslatorFactory())->createPlainTranslator($source, $currentLanguageAlias);
 
-            $callBack = new CollectorMissingTranslatesCatcher();
+            $originalPhraseCollection = new OriginalPhraseCollection(LanguagesEnum::ORIGINAL_LANGUAGE_ALIAS);
+            $callBack = new CollectorMissingTranslatesCatcher($originalPhraseCollection);
 
             $translator->addMissingTranslationCallback($callBack);
 
