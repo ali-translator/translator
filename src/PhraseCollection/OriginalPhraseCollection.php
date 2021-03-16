@@ -13,16 +13,34 @@ use Traversable;
 class OriginalPhraseCollection implements IteratorAggregate
 {
     /**
-     * @var string[]
+     * @var string
      */
-    private $originals;
+    protected $originalLanguageAlias;
 
     /**
+     * @var string[]
+     */
+    protected $originals;
+
+    /**
+     * @param string $originalLanguageAlias
      * @param string[] $originals
      */
-    public function __construct(array $originals = [])
+    public function __construct(
+        $originalLanguageAlias,
+        array $originals = []
+    )
     {
+        $this->originalLanguageAlias = $originalLanguageAlias;
         $this->originals = $originals;
+    }
+
+    /**
+     * @return string
+     */
+    public function getOriginalLanguageAlias()
+    {
+        return $this->originalLanguageAlias;
     }
 
     /**

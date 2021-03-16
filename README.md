@@ -73,8 +73,8 @@ echo MessageFormatter::formatMessage('ru_RU', $translatedPhrase, [
 // -> 'Осталось 1 место'
 ```
 
-### Missing translation catchers
-Packet allow set catchers phrases without translation, which will work after fail `tranlsate` method calling
+### Catchers of missing translations 
+Packet allow set catchers of phrases without translation, which will run after `tranlsate` method failing
 
 ```php
 use ALI\Translator\TranslatorInterface;

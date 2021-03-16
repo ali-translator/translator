@@ -50,7 +50,7 @@ class PhraseTranslatorDecorator implements TranslatorInterface
             $decoratedOriginalPhrases[$phraseKey] = $this->originalDecoratorManager->decorate($phrase);
         }
         $translatePhrasePacket = $this->translator->translateAll($originalLanguageAlias, $translationLanguageAlias, $decoratedOriginalPhrases);
-        $decoratedTranslatedPhrasePacket = new TranslatePhraseCollection();
+        $decoratedTranslatedPhrasePacket = new TranslatePhraseCollection($originalLanguageAlias, $translationLanguageAlias);
         foreach ($decoratedOriginalPhrases as $key => $originalDecoratedPhrase) {
             $originalPhrase = $phrases[$key];
             $translatePhrase =$translatePhrasePacket->getTranslate($originalDecoratedPhrase);
