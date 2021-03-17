@@ -2,6 +2,7 @@
 
 namespace ALI\Translator\Source\Sources\MySqlSource;
 
+use ALI\Translator\PhraseCollection\OriginalPhraseCollection;
 use ALI\Translator\Source\Exceptions\SourceException;
 use ALI\Translator\Source\Installers\MySqlSourceInstaller;
 use ALI\Translator\Source\Installers\SourceInstallerInterface;
@@ -359,5 +360,40 @@ class MySqlSource implements SourceInterface
     public function generateInstaller()
     {
         return new MySqlSourceInstaller($this->pdo, $this->originalTableName, $this->translateTableName);
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getOriginalsWithoutTranslate($translationLanguageAlias, $offset = 0, $limit = null)
+    {
+        $originalsWithoutTranslationCollection = new OriginalPhraseCollection($this->originalLanguageAlias);
+
+        $limitSql = [];
+        if ($limit) {
+            $limitSql[] = 'LIMIT ' . $limit;
+        }
+        if ($offset) {
+            $limitSql[] = 'OFFSET ' . $offset;
+        }
+        $limitSql = implode(' ',$limitSql);
+        $limitSql = $limitSql ? ' '. $limitSql : null;
+
+        $dataQuery = $this->pdo->prepare(
+            'SELECT o.`id`, o.`content_index`, o.`content` as `original`
+                FROM `' . $this->originalTableName . '` AS `o`
+                FORCE INDEX(indexContentIndex)
+                LEFT JOIN `' . $this->translateTableName . '` AS `t` ON (`o`.`id`=`t`.`original_id` AND `t`.`language_alias`=:translationLanguageAlias)
+            WHERE `t`.original_id IS NULL' . $limitSql
+        );
+        $dataQuery->bindParam('translationLanguageAlias', $translationLanguageAlias, PDO::PARAM_STR);
+
+        $dataQuery->execute();
+
+        while ($existPhrase = $dataQuery->fetch(PDO::FETCH_ASSOC)) {
+            $originalsWithoutTranslationCollection->add($existPhrase['original']);
+        }
+
+        return $originalsWithoutTranslationCollection;
     }
 }

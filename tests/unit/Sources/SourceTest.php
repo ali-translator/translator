@@ -166,4 +166,38 @@ class SourceTest extends TestCase
             $this->assertEquals([], $existOriginals);
         }
     }
+
+    public function testGettingOriginalsWithoutTranslate()
+    {
+        $sourceFactory = new SourceFactory();
+        foreach ($sourceFactory::$allSourcesTypes as $sourceType) {
+            $source = $sourceFactory->generateSource($sourceType, 'en', true);
+
+            $source->saveOriginals([
+                'Hello {name}',
+                'Hi {name}',
+                'He has bigger fish to fry',
+                'Good things come to those who wait',
+            ]);
+
+            $source->saveTranslate('ua', 'Hello {name}', 'Привіт {name}');
+            $source->saveTranslate('ua', 'Good things come to those who wait', 'Наберіться терпіння');
+
+            $originalsWithoutTranslate = $source->getOriginalsWithoutTranslate('ua');
+            $this->assertEquals([
+                'Hi {name}',
+                'He has bigger fish to fry',
+            ], $originalsWithoutTranslate->getAll());
+
+            $originalsWithoutTranslate = $source->getOriginalsWithoutTranslate('ua', 0, 1);
+            $this->assertEquals([
+                'Hi {name}',
+            ], $originalsWithoutTranslate->getAll());
+
+            $originalsWithoutTranslate = $source->getOriginalsWithoutTranslate('ua', 1, 1);
+            $this->assertEquals([
+                'He has bigger fish to fry',
+            ], $originalsWithoutTranslate->getAll());
+        }
+    }
 }

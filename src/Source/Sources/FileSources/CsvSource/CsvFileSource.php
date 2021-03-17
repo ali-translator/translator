@@ -2,6 +2,7 @@
 
 namespace ALI\Translator\Source\Sources\FileSources\CsvSource;
 
+use ALI\Translator\PhraseCollection\OriginalPhraseCollection;
 use ALI\Translator\Source\Exceptions\CsvFileSource\DirectoryNotFoundException;
 use ALI\Translator\Source\Exceptions\CsvFileSource\FileNotWritableException;
 use ALI\Translator\Source\Exceptions\CsvFileSource\FileReadPermissionsException;
@@ -202,5 +203,30 @@ class CsvFileSource extends FileSourceAbstract
         }
 
         return $existPhrases;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function getOriginalsWithoutTranslate($translationLanguageAlias, $offset = 0, $limit = null)
+    {
+        $this->preloadTranslates($translationLanguageAlias);
+
+        $originalsWithoutTranslationCollection = new OriginalPhraseCollection($this->originalLanguageAlias);
+
+        $currentOffset = 0;
+        foreach ($this->allTranslates[$this->originalLanguageAlias] as $originalPhrase) {
+            if ($limit && $originalsWithoutTranslationCollection->count() >= $limit) {
+                return $originalsWithoutTranslationCollection;
+            }
+            if (empty($this->allTranslates[$translationLanguageAlias][$originalPhrase])) {
+                if ($offset <= $currentOffset) {
+                    $originalsWithoutTranslationCollection->add($originalPhrase);
+                }
+                $currentOffset++;
+            }
+        }
+
+        return $originalsWithoutTranslationCollection;
     }
 }

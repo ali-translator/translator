@@ -130,10 +130,10 @@ $plainPhraseTranslatorDecorator->translate('Hello 555 Hi 8676');
 * <b>CsvFileSource</b> - csv source. Files will be look like as `en-ua.csv`
 
 ### Suggest packets
-* <b>ali-translator/translator-js-integrate</b> - Integrate this packet to frontend js
-* <b>ali-translator/buffered-translation</b> - Manually pasted text on document for translation, by means of buffering is translated by one approach (helpful for DB sources)
-* <b>ali-translator/auto-html-translation</b> - Parses html document, and translate included texts
-* <b>ali-translator/url-template</b> - Helps on url language resolving
+* <b>[ali-translator/buffered-translation](https://github.com/ali-translator/buffered-translation)</b> - Manually pasted text on document for translation, by means of buffering is translated by one approach (helpful for DB sources)
+* <b>[ali-translator/translator-js-integrate](https://github.com/ali-translator/translator-js-integrate)</b> - Integrate this packet to frontend js
+* <b>[ali-translator/auto-html-translation](https://github.com/ali-translator/auto-html-translation)</b> - Parses html document, and translate included texts
+* <b>[ali-translator/url-template](https://github.com/ali-translator/url-template)</b> - Helps on url language resolving
 
 ### Tests
 In packet exist docker-compose file, with environment for testing.

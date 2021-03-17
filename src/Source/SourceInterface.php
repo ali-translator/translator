@@ -2,6 +2,7 @@
 
 namespace ALI\Translator\Source;
 
+use ALI\Translator\PhraseCollection\OriginalPhraseCollection;
 use ALI\Translator\Source\Exceptions\SourceException;
 use ALI\Translator\Source\Installers\SourceInstallerInterface;
 
@@ -50,6 +51,14 @@ interface SourceInterface
      * @return string[]
      */
     public function getExistOriginals(array $phrases);
+
+    /**
+     * @param string $translationLanguageAlias
+     * @param int $offset
+     * @param null|int $limit
+     * @return OriginalPhraseCollection
+     */
+    public function getOriginalsWithoutTranslate($translationLanguageAlias, $offset = 0, $limit = null);
 
     /**
      * Delete original and all translated phrases
