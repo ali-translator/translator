@@ -11,32 +11,38 @@ use ALI\Translator\PlainTranslator\PlainTranslatorInterface;
 class CollectorMissingTranslatesCatcher
 {
     /**
-     * @var OriginalPhraseCollection
+     * @var OriginalPhraseCollection[]
      */
-    private $originalPhraseCollection;
+    private $originalPhraseCollections = [];
 
     /**
-     * @param OriginalPhraseCollection $originalPhrasePacket
-     */
-    public function __construct(OriginalPhraseCollection $originalPhrasePacket)
-    {
-        $this->originalPhraseCollection = $originalPhrasePacket;
-    }
-
-    /**
+     * @param string $languageAlias
      * @param string $searchPhrase
      * @param PlainTranslatorInterface $translator
      */
-    public function __invoke($searchPhrase, $translator)
+    public function __invoke($languageAlias, $searchPhrase, $translator)
     {
-        $this->originalPhraseCollection->add($searchPhrase);
+        $this->getOriginalPhraseCollectionsByLanguageAlias($languageAlias)->add($searchPhrase);
     }
 
     /**
-     * @return OriginalPhraseCollection
+     * @return OriginalPhraseCollection[]
      */
-    public function getOriginalPhraseCollection()
+    public function getOriginalPhraseCollections()
     {
-        return $this->originalPhraseCollection;
+        return $this->originalPhraseCollections;
+    }
+
+    /**
+     * @param string $languageAlias
+     * @return OriginalPhraseCollection|mixed
+     */
+    public function getOriginalPhraseCollectionsByLanguageAlias($languageAlias)
+    {
+        if (!isset($this->originalPhraseCollections[$languageAlias])) {
+            $this->originalPhraseCollections[$languageAlias] = new OriginalPhraseCollection($languageAlias);
+        }
+
+        return $this->originalPhraseCollections[$languageAlias];
     }
 }

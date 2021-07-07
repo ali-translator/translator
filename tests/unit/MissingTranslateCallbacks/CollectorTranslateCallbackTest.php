@@ -26,9 +26,7 @@ class CollectorTranslateCallbackTest extends TestCase
             $currentLanguageAlias = LanguagesEnum::TRANSLATION_LANGUAGE_ALIAS;
             $translator = (new PlainTranslatorFactory())->createPlainTranslator($source, $currentLanguageAlias);
 
-            $originalPhraseCollection = new OriginalPhraseCollection(LanguagesEnum::ORIGINAL_LANGUAGE_ALIAS);
-            $callBack = new CollectorMissingTranslatesCatcher($originalPhraseCollection);
-
+            $callBack = new CollectorMissingTranslatesCatcher();
             $translator->addMissingTranslationCallback($callBack);
 
             $translatePhrase = $translator->translate('Test');
@@ -41,9 +39,10 @@ class CollectorTranslateCallbackTest extends TestCase
             $this->assertEquals('Кіт', $translatePhrase);
 
             // Test one phrase without translate
-            $this->assertEquals(['Test'], $callBack->getOriginalPhraseCollection()->getAll());
-            $this->assertTrue($callBack->getOriginalPhraseCollection()->exist('Test'));
-            $this->assertFalse($callBack->getOriginalPhraseCollection()->exist('Test new'));
+            $originalPhraseCollection = $callBack->getOriginalPhraseCollectionsByLanguageAlias(LanguagesEnum::ORIGINAL_LANGUAGE_ALIAS);
+            $this->assertEquals(['Test'], $originalPhraseCollection->getAll());
+            $this->assertTrue($originalPhraseCollection->exist('Test'));
+            $this->assertFalse($originalPhraseCollection->exist('Test new'));
         }
     }
 }

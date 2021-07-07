@@ -4,6 +4,7 @@ namespace ALI\Translator;
 
 use ALI\Translator\PhraseCollection\TranslatePhraseCollection;
 use ALI\Translator\Source\SourceInterface;
+use RuntimeException;
 
 /**
  * Interface
@@ -14,7 +15,7 @@ interface TranslatorInterface
      * @param $originalLanguageAlias
      * @param $translationLanguageAlias
      * @return SourceInterface|null
-     * @throws \Exception
+     * @throws RuntimeException
      */
     public function getSource($originalLanguageAlias, $translationLanguageAlias = null);
 

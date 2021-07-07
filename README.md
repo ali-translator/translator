@@ -89,7 +89,7 @@ $translator->addMissingTranslationCatchers(function (string $searchPhrase, Trans
 $collectorMissingTranslatesCatcher = new CollectorMissingTranslatesCatcher();
 $translator->addMissingTranslationCatchers($collectorMissingTranslatesCatcher);
 $translator->translate('Hello 123');
-$collectorMissingTranslatesCatcher->getOriginalPhraseCollection()->getAll();
+$collectorMissingTranslatesCatcher->getOriginalPhraseCollectionsByLanguageAlias('ru')->getAll();
  // -> ['Hello 123']
 ```
 

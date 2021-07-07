@@ -6,6 +6,7 @@ use ALI\Translator\PhraseCollection\TranslatePhraseCollection;
 use ALI\Translator\Source\Exceptions\SourceException;
 use ALI\Translator\Source\SourceInterface;
 use ALI\Translator\Source\SourcesCollection;
+use RuntimeException;
 
 /**
  * Translator
@@ -44,14 +45,14 @@ class Translator implements TranslatorInterface
     /**
      * @param string $originalLanguageAlias
      * @param string $translationLanguageAlias
-     * @return SourceInterface|null
-     * @throws \Exception
+     * @return SourceInterface
+     * @throws RuntimeException
      */
     public function getSource($originalLanguageAlias, $translationLanguageAlias = null)
     {
         $source = $this->sourceCollection->getSource($originalLanguageAlias, $translationLanguageAlias);
         if (!$source) {
-            throw new \Exception('Not found source for ' . $originalLanguageAlias . '_' . $translationLanguageAlias . ' language pair');
+            throw new RuntimeException('Not found source for ' . $originalLanguageAlias . '_' . $translationLanguageAlias . ' language pair');
         }
 
         return $source;
@@ -76,7 +77,7 @@ class Translator implements TranslatorInterface
     /**
      * @param string $originalLanguageAlias
      * @param string $translationLanguageAlias
-     * @param string $phrases
+     * @param array $phrases
      * @return TranslatePhraseCollection
      * @throws \Exception
      */
@@ -105,7 +106,7 @@ class Translator implements TranslatorInterface
             if (!$translate) {
                 foreach ($this->getMissingTranslationCatchers() as $missingTranslationCallbacks) {
                     if (is_callable($missingTranslationCallbacks)) {
-                        $translate = call_user_func($missingTranslationCallbacks, $searchPhrase, $this) ?: null;
+                        $translate = $missingTranslationCallbacks($originalLanguageAlias, $searchPhrase, $this) ?: null;
                         if ($translate) {
                             break;
                         }
