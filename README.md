@@ -53,7 +53,7 @@ $translator->saveTranslate('en', 'ru', 'Hello', 'Привет');
 $translator->translate('en', 'ru', 'Hello');
 
 // Also, if you need, you always can transform translator to plainTranslator to work simplification
-$plainTranslator = new PlainTranslator('en', 'ru', $translator)
+$plainTranslator = new PlainTranslator('en', 'ru', $translator);
 ```
 
 ### Parameters resolving
@@ -128,6 +128,12 @@ $plainPhraseTranslatorDecorator->translate('Hello 555 Hi 8676');
 #### Available sources
 * <b>MySqlSource</b> - recommended for using with `ali-translator/buffered-translation` to reduce the number of requests to Source
 * <b>CsvFileSource</b> - csv source. Files will be look like as `en-ua.csv`
+
+### Languages
+For convenience, a couple of classes are integrated into this package to help with languages.<br>
+`LanguageInterface` - Has `getTitle()` and `getAlias()`methods<br>
+`LanguageRepositoryInterface` - Has `save(LanguageInterface $language, $isActive)`, `find($alias)`, `getAll($onlyActive)` methods.<br>
+And realization for repository interface: `ArrayLanguageRepository`(`ArrayLanguageRepositoryFactory`) and `MySqlLanguageRepository`(`MySqlLanguageRepositoryInstaller`)
 
 ### Suggest packets
 * <b>[ali-translator/buffered-translation](https://github.com/ali-translator/buffered-translation)</b> - Manually pasted text on document for translation, by means of buffering is translated by one approach (helpful for DB sources)

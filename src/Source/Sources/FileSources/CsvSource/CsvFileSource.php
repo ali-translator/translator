@@ -11,7 +11,7 @@ use ALI\Translator\Source\Sources\FileSources\FileSourceAbstract;
 
 /**
  * Source for simple translation storage. Directory with text files.
- * File names - must be in format language_alias.file_extension.
+ * File names - will be in format language_alias.file_extension.
  * Language alias - allowed only word symbols and "-_"
  * Content in files - first original and after delimiter - translate.
  * Class FileSource
