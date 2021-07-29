@@ -26,7 +26,7 @@ class FileSourceInstaller implements SourceInstallerInterface
     /**
      * @inheritDoc
      */
-    public function isInstalled()
+    public function isInstalled(): bool
     {
         $iterator = $this->fileSource->getGlobIterator();
 
@@ -34,12 +34,16 @@ class FileSourceInstaller implements SourceInstallerInterface
     }
 
     /**
-     * @inheritDoc
+     * @throws UnsupportedLanguageAliasException
      */
     public function install()
     {
-        if (!file_exists($this->fileSource->getDirectoryPath())) {
-            mkdir($this->fileSource->getDirectoryPath(), 0777, true);
+        if (
+            !file_exists($this->fileSource->getDirectoryPath())
+            && !mkdir($concurrentDirectory = $this->fileSource->getDirectoryPath(), 0777, true)
+            && !is_dir($concurrentDirectory)
+        ) {
+            throw new \RuntimeException(sprintf('Directory "%s" was not created', $concurrentDirectory));
         }
         $originalFilePath = $this->getOriginalFilePath();
         if (!file_exists($originalFilePath)) {
@@ -63,7 +67,7 @@ class FileSourceInstaller implements SourceInstallerInterface
      * @return string
      * @throws UnsupportedLanguageAliasException
      */
-    public function getOriginalFilePath()
+    public function getOriginalFilePath(): string
     {
         return $this->fileSource->getLanguageFilePath($this->fileSource->getOriginalLanguageAlias());
     }

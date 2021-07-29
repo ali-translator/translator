@@ -37,7 +37,7 @@ class Translator implements TranslatorInterface
     /**
      * @return SourcesCollection
      */
-    public function getSourceCollection()
+    public function getSourceCollection(): SourcesCollection
     {
         return $this->sourceCollection;
     }
@@ -48,11 +48,11 @@ class Translator implements TranslatorInterface
      * @return SourceInterface
      * @throws RuntimeException
      */
-    public function getSource($originalLanguageAlias, $translationLanguageAlias = null)
+    public function getSource($originalLanguageAlias, $translationLanguageAlias = null): SourceInterface
     {
         $source = $this->sourceCollection->getSource($originalLanguageAlias, $translationLanguageAlias);
         if (!$source) {
-            throw new RuntimeException('Not found source for ' . $originalLanguageAlias . '_' . $translationLanguageAlias . ' language pair');
+            throw new RuntimeException('Not found source for ' . $originalLanguageAlias . '->' . $translationLanguageAlias . ' language pair');
         }
 
         return $source;
@@ -61,7 +61,7 @@ class Translator implements TranslatorInterface
     /**
      * @return callable[]
      */
-    public function getMissingTranslationCatchers()
+    public function getMissingTranslationCatchers(): array
     {
         return $this->missingTranslationCallbacks;
     }
@@ -81,7 +81,7 @@ class Translator implements TranslatorInterface
      * @return TranslatePhraseCollection
      * @throws \Exception
      */
-    public function translateAll($originalLanguageAlias, $translationLanguageAlias, $phrases)
+    public function translateAll(string $originalLanguageAlias,string $translationLanguageAlias,array $phrases): TranslatePhraseCollection
     {
         $translatePhrasePacket = new TranslatePhraseCollection($originalLanguageAlias, $translationLanguageAlias);
         if ($originalLanguageAlias === $translationLanguageAlias) {
@@ -102,7 +102,7 @@ class Translator implements TranslatorInterface
         );
 
         foreach ($searchPhrases as $originalPhrase => $searchPhrase) {
-            $translate = isset($translatesFromSource[$searchPhrase]) ? $translatesFromSource[$searchPhrase] : null;
+            $translate = $translatesFromSource[$searchPhrase] ?? null;
             if (!$translate) {
                 foreach ($this->getMissingTranslationCatchers() as $missingTranslationCallbacks) {
                     if (is_callable($missingTranslationCallbacks)) {
@@ -129,10 +129,10 @@ class Translator implements TranslatorInterface
      * @throws \Exception
      */
     public function translate(
-        $originalLanguageAlias,
-        $translationLanguageAlias,
-        $phrase,
-        $withTranslationFallback = false
+        string $originalLanguageAlias,
+        string $translationLanguageAlias,
+        string $phrase,
+        bool $withTranslationFallback = false
     )
     {
         if ($originalLanguageAlias === $translationLanguageAlias) {
@@ -152,10 +152,10 @@ class Translator implements TranslatorInterface
      * @throws SourceException
      */
     public function saveTranslate(
-        $originalLanguageAlias,
-        $translationLanguageAlias,
-        $original,
-        $translate
+        string $originalLanguageAlias,
+        string $translationLanguageAlias,
+        string $original,
+        string $translate
     )
     {
         $source = $this->getSource($originalLanguageAlias, $translationLanguageAlias);
@@ -169,13 +169,13 @@ class Translator implements TranslatorInterface
     /**
      * @param string $originalLanguageAlias
      * @param string $original
-     * @param null $translationLanguageAlias
+     * @param null|string $translationLanguageAlias
      * @throws \Exception
      */
     public function delete(
-        $originalLanguageAlias,
-        $original,
-        $translationLanguageAlias = null
+        string $originalLanguageAlias,
+        string $original,
+        string $translationLanguageAlias = null
     )
     {
         $this->getSource($originalLanguageAlias, $translationLanguageAlias)->delete($original);

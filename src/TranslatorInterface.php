@@ -12,30 +12,31 @@ use RuntimeException;
 interface TranslatorInterface
 {
     /**
-     * @param $originalLanguageAlias
-     * @param $translationLanguageAlias
+     * @param string $originalLanguageAlias
+     * @param string $translationLanguageAlias
      * @return SourceInterface|null
      * @throws RuntimeException
      */
-    public function getSource($originalLanguageAlias, $translationLanguageAlias = null);
+    public function getSource(string $originalLanguageAlias, string $translationLanguageAlias = null);
 
     /**
      * @return callable[]
      */
-    public function getMissingTranslationCatchers();
+    public function getMissingTranslationCatchers(): array;
 
     /**
      * @param callable $missingTranslationCallback
+     * @return void
      */
     public function addMissingTranslationCatchers(callable $missingTranslationCallback);
 
     /**
-     * @param $originalLanguageAlias
-     * @param $translationLanguageAlias
-     * @param $phrases
+     * @param string $originalLanguageAlias
+     * @param string $translationLanguageAlias
+     * @param array $phrases
      * @return TranslatePhraseCollection
      */
-    public function translateAll($originalLanguageAlias, $translationLanguageAlias, $phrases);
+    public function translateAll(string $originalLanguageAlias, string $translationLanguageAlias, array $phrases): TranslatePhraseCollection;
 
     /**
      * @param string $originalLanguageAlias
@@ -45,32 +46,35 @@ interface TranslatorInterface
      * @return string|null
      */
     public function translate(
-        $originalLanguageAlias,
-        $translationLanguageAlias,
-        $phrase,
-        $withTranslationFallback = false
+        string $originalLanguageAlias,
+        string $translationLanguageAlias,
+        string $phrase,
+        bool $withTranslationFallback = false
     );
 
     /**
-     * @param $original
-     * @param $translate
-     * @param string $languageAlias
+     * @param string $originalLanguageAlias
+     * @param string $translationLanguageAlias
+     * @param string $original
+     * @param string $translate
+     * @return void
      */
     public function saveTranslate(
-        $originalLanguageAlias,
-        $translationLanguageAlias,
-        $original,
-        $translate
+        string $originalLanguageAlias,
+        string $translationLanguageAlias,
+        string $original,
+        string $translate
     );
 
     /**
      * @param string $originalLanguageAlias
      * @param string $original
      * @param null|string $translationLanguageAlias
+     * @return void
      */
     public function delete(
-        $originalLanguageAlias,
-        $original,
-        $translationLanguageAlias = null
+        string $originalLanguageAlias,
+        string $original,
+        string $translationLanguageAlias = null
     );
 }

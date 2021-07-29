@@ -50,7 +50,7 @@ class PlainTranslator implements PlainTranslatorInterface
     /**
      * @return bool
      */
-    public function isCurrentLanguageOriginal()
+    public function isCurrentLanguageOriginal(): bool
     {
         return $this->translationLanguageAlias === $this->originalLanguageAlias;
     }
@@ -58,7 +58,7 @@ class PlainTranslator implements PlainTranslatorInterface
     /**
      * @return string
      */
-    public function getTranslationLanguageAlias()
+    public function getTranslationLanguageAlias(): string
     {
         return $this->translationLanguageAlias;
     }
@@ -66,7 +66,7 @@ class PlainTranslator implements PlainTranslatorInterface
     /**
      * @return SourceInterface
      */
-    public function getSource()
+    public function getSource(): SourceInterface
     {
         return $this->translator->getSource($this->originalLanguageAlias, $this->translationLanguageAlias);
     }
@@ -91,7 +91,7 @@ class PlainTranslator implements PlainTranslatorInterface
      * @param array $phrases
      * @return TranslatePhraseCollection
      */
-    public function translateAll($phrases)
+    public function translateAll($phrases): TranslatePhraseCollection
     {
         return $this->translator->translateAll($this->originalLanguageAlias, $this->translationLanguageAlias, $phrases);
     }
@@ -112,9 +112,8 @@ class PlainTranslator implements PlainTranslatorInterface
      * @param $original
      * @param $translate
      * @param string $translationLanguageAlias
-     * @throws SourceException
      */
-    public function saveTranslate($original, $translate, $translationLanguageAlias = null)
+    public function saveTranslate(string $original,string $translate, $translationLanguageAlias = null)
     {
         $translationLanguageAlias = $translationLanguageAlias ?: $this->translationLanguageAlias;
 
@@ -125,7 +124,7 @@ class PlainTranslator implements PlainTranslatorInterface
      * Delete original and all translated phrases
      * @param $original
      */
-    public function delete($original)
+    public function delete(string $original)
     {
         $this->translator->delete($this->originalLanguageAlias, $original, $this->translationLanguageAlias);
     }

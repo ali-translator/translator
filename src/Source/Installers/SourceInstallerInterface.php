@@ -10,7 +10,7 @@ interface SourceInstallerInterface
     /**
      * @return bool
      */
-    public function isInstalled();
+    public function isInstalled(): bool;
 
     /**
      * Install

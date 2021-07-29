@@ -59,7 +59,7 @@ class MySqlSource implements SourceInterface
     /**
      * @return bool
      */
-    public function isSensitiveForRequestsCount()
+    public function isSensitiveForRequestsCount(): bool
     {
         return true;
     }
@@ -67,7 +67,7 @@ class MySqlSource implements SourceInterface
     /**
      * @return string
      */
-    public function getOriginalLanguageAlias()
+    public function getOriginalLanguageAlias(): string
     {
         return $this->originalLanguageAlias;
     }
@@ -77,8 +77,9 @@ class MySqlSource implements SourceInterface
      * @param string $languageAliasAlias
      * @return string|null
      * @throws SourceException
+     * @throws Exception
      */
-    public function getTranslate($phrase, $languageAliasAlias)
+    public function getTranslate(string $phrase,string $languageAliasAlias)
     {
         $translates = $this->getTranslates([$phrase], $languageAliasAlias);
         if ($translates) {
@@ -94,7 +95,7 @@ class MySqlSource implements SourceInterface
      * @return array|false
      * @throws Exception
      */
-    public function getTranslates(array $phrases, $languageAlias)
+    public function getTranslates(array $phrases, string $languageAlias): array
     {
         if ($languageAlias === $this->originalLanguageAlias) {
             return array_combine($phrases, $phrases);
@@ -157,7 +158,7 @@ class MySqlSource implements SourceInterface
      * @param string $translate
      * @throws LanguageNotExistsException
      */
-    public function saveTranslate($languageAlias, $original, $translate)
+    public function saveTranslate(string $languageAlias, string $original, string $translate)
     {
         $originalId = $this->getOriginalId($original);
         if (!$originalId) {
@@ -229,7 +230,7 @@ class MySqlSource implements SourceInterface
      * Delete original and all translated phrases
      * @param string $original
      */
-    public function delete($original)
+    public function delete(string $original)
     {
         $statement = $this->pdo->prepare('
                 DELETE FROM `' . $this->originalTableName . '` WHERE content_index=:contentIndex AND content=:content AND language_alias=:originalLanguageAlias
@@ -243,6 +244,7 @@ class MySqlSource implements SourceInterface
 
     /**
      * @param string[] $phrases
+     * @throws Exception
      */
     public function saveOriginals(array $phrases)
     {
@@ -270,9 +272,10 @@ class MySqlSource implements SourceInterface
 
     /**
      * @param array $phrases
-     * @return array|mixed|string[]
+     * @return array|string[]
+     * @throws Exception
      */
-    public function getExistOriginals(array $phrases)
+    public function getExistOriginals(array $phrases): array
     {
         if (!$phrases) {
             return [];
@@ -362,7 +365,7 @@ class MySqlSource implements SourceInterface
     /**
      * @return MySqlSourceInstaller|SourceInstallerInterface
      */
-    public function generateInstaller()
+    public function generateInstaller(): SourceInstallerInterface
     {
         return new MySqlSourceInstaller($this->pdo, $this->originalTableName, $this->translateTableName);
     }
@@ -370,7 +373,7 @@ class MySqlSource implements SourceInterface
     /**
      * @inheritDoc
      */
-    public function getOriginalsWithoutTranslate($translationLanguageAlias, $offset = 0, $limit = null)
+    public function getOriginalsWithoutTranslate(string $translationLanguageAlias, $offset = 0, $limit = null): OriginalPhraseCollection
     {
         $originalsWithoutTranslationCollection = new OriginalPhraseCollection($this->originalLanguageAlias);
 

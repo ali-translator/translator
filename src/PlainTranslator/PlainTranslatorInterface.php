@@ -14,43 +14,43 @@ interface PlainTranslatorInterface
      * @param array $phrases
      * @return TranslatePhraseCollection
      */
-    public function translateAll($phrases);
+    public function translateAll($phrases): TranslatePhraseCollection;
 
     /**
      * @param string $phrase
      * @param bool $withTranslationFallback
-     * @return string
+     * @return null|string
      */
-    public function translate($phrase, $withTranslationFallback = false);
+    public function translate(string $phrase,$withTranslationFallback = false);
 
     /**
      * @param string $original
      * @param string $translate
      * @param null $translationLanguageAlias
      */
-    public function saveTranslate($original, $translate, $translationLanguageAlias = null);
+    public function saveTranslate(string $original, string $translate, $translationLanguageAlias = null);
 
     /**
      * Delete original and all translated phrases
      *
      * @param string $original
      */
-    public function delete($original);
+    public function delete(string $original);
 
     /**
      * @return bool
      */
-    public function isCurrentLanguageOriginal();
+    public function isCurrentLanguageOriginal(): bool;
 
     /**
      * @return string
      */
-    public function getTranslationLanguageAlias();
+    public function getTranslationLanguageAlias(): string;
 
     /**
      * @return SourceInterface
      */
-    public function getSource();
+    public function getSource(): SourceInterface;
 
     /**
      * @param callable $missingTranslationCallback

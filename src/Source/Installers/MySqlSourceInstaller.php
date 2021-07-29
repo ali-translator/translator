@@ -39,7 +39,7 @@ class MySqlSourceInstaller implements SourceInstallerInterface
     /**
      * @return bool
      */
-    public function isInstalled()
+    public function isInstalled(): bool
     {
         $query = $this->pdo->prepare(
             'select COUNT(*) from information_schema.tables where table_schema=DATABASE() AND (TABLE_NAME=:tableOriginal OR TABLE_NAME=:tableTranslate)'

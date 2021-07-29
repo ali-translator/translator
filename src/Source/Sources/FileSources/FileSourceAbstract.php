@@ -31,7 +31,7 @@ abstract class FileSourceAbstract implements SourceInterface
     /**
      * @return string
      */
-    public function getOriginalLanguageAlias()
+    public function getOriginalLanguageAlias(): string
     {
         return $this->originalLanguageAlias;
     }
@@ -50,7 +50,7 @@ abstract class FileSourceAbstract implements SourceInterface
      * @return array
      * @throws SourceException
      */
-    public function getTranslates(array $phrases, $languageAlias)
+    public function getTranslates(array $phrases, string $languageAlias): array
     {
         $translatePhrases = [];
         foreach ($phrases as $phrase) {
@@ -63,7 +63,7 @@ abstract class FileSourceAbstract implements SourceInterface
     /**
      * @return bool
      */
-    public function isSensitiveForRequestsCount()
+    public function isSensitiveForRequestsCount(): bool
     {
         return false;
     }
@@ -110,7 +110,7 @@ abstract class FileSourceAbstract implements SourceInterface
     /**
      * @return SourceInstallerInterface|FileSourceInstaller
      */
-    public function generateInstaller()
+    public function generateInstaller(): SourceInstallerInterface
     {
         return new FileSourceInstaller($this);
     }

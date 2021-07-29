@@ -14,15 +14,15 @@ interface SourceInterface
     /**
      * @return string
      */
-    public function getOriginalLanguageAlias();
+    public function getOriginalLanguageAlias(): string;
 
     /**
      * @param string $phrase
      * @param string $languageAliasAlias
-     * @return string
+     * @return null|string
      * @throws SourceException
      */
-    public function getTranslate($phrase, $languageAliasAlias);
+    public function getTranslate(string $phrase, string $languageAliasAlias);
 
     /**
      * Get an array with original phrases as a key
@@ -31,7 +31,7 @@ interface SourceInterface
      * @param string $languageAlias
      * @return array
      */
-    public function getTranslates(array $phrases, $languageAlias);
+    public function getTranslates(array $phrases, string $languageAlias): array;
 
     /**
      * @param string $languageAlias
@@ -39,7 +39,7 @@ interface SourceInterface
      * @param string $translate
      * @throws SourceException
      */
-    public function saveTranslate($languageAlias, $original, $translate);
+    public function saveTranslate(string $languageAlias, string $original, string $translate);
 
     /**
      * @param string[] $phrases
@@ -50,7 +50,7 @@ interface SourceInterface
      * @param string[] $phrases
      * @return string[]
      */
-    public function getExistOriginals(array $phrases);
+    public function getExistOriginals(array $phrases): array;
 
     /**
      * @param string $translationLanguageAlias
@@ -58,21 +58,21 @@ interface SourceInterface
      * @param null|int $limit
      * @return OriginalPhraseCollection
      */
-    public function getOriginalsWithoutTranslate($translationLanguageAlias, $offset = 0, $limit = null);
+    public function getOriginalsWithoutTranslate(string $translationLanguageAlias, $offset = 0, $limit = null): OriginalPhraseCollection;
 
     /**
      * Delete original and all translated phrases
      * @param string $original
      */
-    public function delete($original);
+    public function delete(string $original);
 
     /**
      * @return bool
      */
-    public function isSensitiveForRequestsCount();
+    public function isSensitiveForRequestsCount(): bool;
 
     /**
      * @return SourceInstallerInterface
      */
-    public function generateInstaller();
+    public function generateInstaller(): SourceInstallerInterface;
 }
