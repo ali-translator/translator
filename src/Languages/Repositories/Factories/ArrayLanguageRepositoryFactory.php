@@ -17,7 +17,7 @@ class ArrayLanguageRepositoryFactory
      * @param array $inActiveLanguagesData
      * @return ArrayLanguageRepository
      */
-    public function createArrayLanguageRepository(array $activeLanguagesData = [], array $inActiveLanguagesData = [])
+    public function createArrayLanguageRepository(array $activeLanguagesData = [], array $inActiveLanguagesData = []): ArrayLanguageRepository
     {
         $arrayLanguageRepository = new ArrayLanguageRepository();
         foreach ($activeLanguagesData as $alias => $title) {

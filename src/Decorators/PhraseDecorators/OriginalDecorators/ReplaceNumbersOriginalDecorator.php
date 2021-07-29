@@ -11,7 +11,7 @@ class ReplaceNumbersOriginalDecorator implements OriginalPhraseDecoratorInterfac
      * @param string $original
      * @return string
      */
-    public function decorate($original)
+    public function decorate(string $original): string
     {
         return preg_replace('!\d+!', '0', $original);
     }

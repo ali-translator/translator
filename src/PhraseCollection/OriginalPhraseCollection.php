@@ -27,7 +27,7 @@ class OriginalPhraseCollection implements IteratorAggregate
      * @param string[] $originals
      */
     public function __construct(
-        $originalLanguageAlias,
+        string $originalLanguageAlias,
         array $originals = []
     )
     {
@@ -38,7 +38,7 @@ class OriginalPhraseCollection implements IteratorAggregate
     /**
      * @return string
      */
-    public function getOriginalLanguageAlias()
+    public function getOriginalLanguageAlias(): string
     {
         return $this->originalLanguageAlias;
     }
@@ -46,7 +46,7 @@ class OriginalPhraseCollection implements IteratorAggregate
     /**
      * @param string $content
      */
-    public function add($content)
+    public function add(string $content)
     {
         $this->originals[$content] = $content;
     }
@@ -55,15 +55,15 @@ class OriginalPhraseCollection implements IteratorAggregate
      * @param string $content
      * @return bool
      */
-    public function exist($content)
+    public function exist(string $content)
     {
         return isset($this->originals[$content]);
     }
 
     /**
-     * @param $content
+     * @param string $content
      */
-    public function remove($content)
+    public function remove(string $content)
     {
         if (isset($this->originals[$content])) {
             unset($this->originals[$content]);
@@ -73,7 +73,7 @@ class OriginalPhraseCollection implements IteratorAggregate
     /**
      * @return int
      */
-    public function count()
+    public function count(): int
     {
         return count($this->originals);
     }
@@ -81,7 +81,7 @@ class OriginalPhraseCollection implements IteratorAggregate
     /**
      * @return string[]
      */
-    public function getAll()
+    public function getAll(): array
     {
         return array_values($this->originals);
     }

@@ -11,5 +11,5 @@ interface OriginalPhraseDecoratorInterface
      * @param string $original
      * @return string
      */
-    public function decorate($original);
+    public function decorate(string $original): string;
 }

@@ -27,7 +27,7 @@ class TranslatePhraseCollection implements IteratorAggregate
 
     /**
      * @param string $originalLanguageAlias
-     * @param string $translationLanguageAlias,
+     * @param string $translationLanguageAlias ,
      * @param string[] $originalsWithTranslate
      */
     public function __construct(
@@ -44,7 +44,7 @@ class TranslatePhraseCollection implements IteratorAggregate
     /**
      * @return string
      */
-    public function getOriginalLanguageAlias()
+    public function getOriginalLanguageAlias(): string
     {
         return $this->originalLanguageAlias;
     }
@@ -52,16 +52,16 @@ class TranslatePhraseCollection implements IteratorAggregate
     /**
      * @return string
      */
-    public function getTranslationLanguageAlias()
+    public function getTranslationLanguageAlias(): string
     {
         return $this->translationLanguageAlias;
     }
 
     /**
      * @param string $original
-     * @param string $translate
+     * @param null|string $translate
      */
-    public function addTranslate($original, $translate)
+    public function addTranslate(string $original, $translate)
     {
         $this->originalsWithTranslate[$original] = $translate;
     }
@@ -71,7 +71,7 @@ class TranslatePhraseCollection implements IteratorAggregate
      * @param bool $withTranslationFallback
      * @return string|null
      */
-    public function getTranslate($original, $withTranslationFallback = false)
+    public function getTranslate(string $original, bool $withTranslationFallback = false)
     {
         if (isset($this->originalsWithTranslate[$original])) {
             $translation = $this->originalsWithTranslate[$original];
@@ -90,7 +90,7 @@ class TranslatePhraseCollection implements IteratorAggregate
      * @param string $original
      * @return bool
      */
-    public function existOriginal($original)
+    public function existOriginal(string $original): bool
     {
         return isset($this->originalsWithTranslate[$original]);
     }
@@ -99,7 +99,7 @@ class TranslatePhraseCollection implements IteratorAggregate
      * @param string $original
      * @return bool
      */
-    public function existTranslate($original)
+    public function existTranslate(string $original): bool
     {
         return !empty($this->originalsWithTranslate[$original]);
     }
@@ -107,7 +107,7 @@ class TranslatePhraseCollection implements IteratorAggregate
     /**
      * @return string[]
      */
-    public function getAll()
+    public function getAll(): array
     {
         return $this->originalsWithTranslate;
     }
@@ -115,7 +115,7 @@ class TranslatePhraseCollection implements IteratorAggregate
     /**
      * @return OriginalPhraseCollection
      */
-    public function generateOriginalPhraseCollection()
+    public function generateOriginalPhraseCollection(): OriginalPhraseCollection
     {
         $allTranslatesPhrases = $this->getAll();
         $originalPhrases = array_values($allTranslatesPhrases);

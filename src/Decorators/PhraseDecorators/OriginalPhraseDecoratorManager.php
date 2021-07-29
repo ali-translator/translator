@@ -26,7 +26,7 @@ class OriginalPhraseDecoratorManager implements OriginalPhraseDecoratorInterface
      * @param string $original
      * @return string
      */
-    public function decorate($original)
+    public function decorate(string $original): string
     {
         foreach ($this->originalDecorators as $originalDecorator) {
             $original = $originalDecorator->decorate($original);
@@ -38,7 +38,7 @@ class OriginalPhraseDecoratorManager implements OriginalPhraseDecoratorInterface
     /**
      * @return OriginalPhraseDecoratorInterface[]
      */
-    public function getOriginalDecorators()
+    public function getOriginalDecorators(): array
     {
         return $this->originalDecorators;
     }
@@ -46,7 +46,7 @@ class OriginalPhraseDecoratorManager implements OriginalPhraseDecoratorInterface
     /**
      * @param OriginalPhraseDecoratorInterface[] $originalDecorators
      */
-    public function setOriginalDecorators($originalDecorators)
+    public function setOriginalDecorators(array $originalDecorators)
     {
         $this->originalDecorators = $originalDecorators;
     }

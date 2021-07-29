@@ -3,7 +3,7 @@
 namespace ALI\Translator\MissingTranslateCatchers;
 
 use ALI\Translator\PhraseCollection\OriginalPhraseCollection;
-use ALI\Translator\PlainTranslator\PlainTranslatorInterface;
+use ALI\Translator\TranslatorInterface;
 
 /**
  * Class
@@ -18,9 +18,9 @@ class CollectorMissingTranslatesCatcher
     /**
      * @param string $languageAlias
      * @param string $searchPhrase
-     * @param PlainTranslatorInterface $translator
+     * @param TranslatorInterface $translator
      */
-    public function __invoke($languageAlias, $searchPhrase, $translator)
+    public function __invoke(string $languageAlias, string $searchPhrase, TranslatorInterface $translator)
     {
         $this->getOriginalPhraseCollectionsByLanguageAlias($languageAlias)->add($searchPhrase);
     }
@@ -28,7 +28,7 @@ class CollectorMissingTranslatesCatcher
     /**
      * @return OriginalPhraseCollection[]
      */
-    public function getOriginalPhraseCollections()
+    public function getOriginalPhraseCollections(): array
     {
         return $this->originalPhraseCollections;
     }
@@ -37,7 +37,7 @@ class CollectorMissingTranslatesCatcher
      * @param string $languageAlias
      * @return OriginalPhraseCollection|mixed
      */
-    public function getOriginalPhraseCollectionsByLanguageAlias($languageAlias)
+    public function getOriginalPhraseCollectionsByLanguageAlias(string $languageAlias): OriginalPhraseCollection
     {
         if (!isset($this->originalPhraseCollections[$languageAlias])) {
             $this->originalPhraseCollections[$languageAlias] = new OriginalPhraseCollection($languageAlias);

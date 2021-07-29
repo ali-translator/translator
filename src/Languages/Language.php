@@ -21,7 +21,7 @@ class Language implements LanguageInterface
      * @param string $alias
      * @param string $title
      */
-    public function __construct($alias, $title = '')
+    public function __construct(string $alias, string $title = '')
     {
         $this->alias = $alias;
         $this->title = $title;

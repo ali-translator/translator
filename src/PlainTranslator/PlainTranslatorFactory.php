@@ -16,7 +16,7 @@ class PlainTranslatorFactory
      * @param $translationLanguageAlias
      * @return PlainTranslator
      */
-    public function createPlainTranslator(SourceInterface $source, $translationLanguageAlias)
+    public function createPlainTranslator(SourceInterface $source, $translationLanguageAlias): PlainTranslator
     {
         $sourceCollection = new SourcesCollection();
         $sourceCollection->addSource($source);
