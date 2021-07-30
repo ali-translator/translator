@@ -53,6 +53,18 @@ interface SourceInterface
     public function getExistOriginals(array $phrases): array;
 
     /**
+     * @param string[] $phrases
+     * @return string[]
+     */
+    public function getOriginalsIds(array $phrases): array;
+
+    /**
+     * @param string[] $originalsIds
+     * @return string[]
+     */
+    public function getOriginalsByIds(array $originalsIds): array;
+
+    /**
      * @param string $translationLanguageAlias
      * @param int $offset
      * @param null|int $limit

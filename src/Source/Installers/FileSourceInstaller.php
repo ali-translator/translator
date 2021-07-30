@@ -58,8 +58,13 @@ class FileSourceInstaller implements SourceInstallerInterface
     {
         $iterator = $this->fileSource->getGlobIterator();
         while ($iterator->valid()) {
-            unlink($iterator->current()->getPathname());
+            if (is_file($iterator->current()->getPathname())) {
+                unlink($iterator->current()->getPathname());
+            }
             $iterator->next();
+        }
+        if (is_file($this->fileSource->getIncrementFilePath())) {
+            unlink($this->fileSource->getIncrementFilePath());
         }
     }
 

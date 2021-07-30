@@ -126,7 +126,7 @@ $plainPhraseTranslatorDecorator->translate('Hello 555 Hi 8676');
 ```
 
 #### Available sources
-* <b>MySqlSource</b> - recommended for using with `ali-translator/buffered-translation` to reduce the number of requests to Source
+* <b>MySqlSource</b> - recommended for using with [ali-translator/buffered-translation](https://github.com/ali-translator/buffered-translation) to reduce the number of requests to Source
 * <b>CsvFileSource</b> - csv source. Files will be look like as `en-ua.csv`
 
 ### Languages

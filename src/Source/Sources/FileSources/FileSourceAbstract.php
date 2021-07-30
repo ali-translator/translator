@@ -7,6 +7,7 @@ use ALI\Translator\Source\Exceptions\SourceException;
 use ALI\Translator\Source\Installers\FileSourceInstaller;
 use ALI\Translator\Source\Installers\SourceInstallerInterface;
 use ALI\Translator\Source\SourceInterface;
+use Exception;
 
 /**
  * FileSourceAbstract
@@ -97,6 +98,26 @@ abstract class FileSourceAbstract implements SourceInterface
         }
 
         return $this->getDirectoryPath() . DIRECTORY_SEPARATOR . $this->originalLanguageAlias . '_' . $languageAlias . '.' . $this->filesExtension;
+    }
+
+    public function getNextIncrementId(): int
+    {
+        $incrementFilePath = $this->getIncrementFilePath();
+        try {
+            $currentIncrementKey = file_get_contents($incrementFilePath) ?: 0;
+        } catch (Exception $exception) {
+            $currentIncrementKey = 0;
+        }
+
+        $nextIncrementKey = $currentIncrementKey + 1;
+        file_put_contents($incrementFilePath, $nextIncrementKey);
+
+        return $nextIncrementKey;
+    }
+
+    public function getIncrementFilePath(): string
+    {
+        return $this->getDirectoryPath() . DIRECTORY_SEPARATOR . 'increment.data';
     }
 
     /**

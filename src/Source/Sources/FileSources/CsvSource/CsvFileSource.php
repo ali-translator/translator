@@ -8,6 +8,7 @@ use ALI\Translator\Source\Exceptions\CsvFileSource\FileNotWritableException;
 use ALI\Translator\Source\Exceptions\CsvFileSource\FileReadPermissionsException;
 use ALI\Translator\Source\Exceptions\CsvFileSource\UnsupportedLanguageAliasException;
 use ALI\Translator\Source\Sources\FileSources\FileSourceAbstract;
+use RuntimeException;
 
 /**
  * Source for simple translation storage. Directory with text files.
@@ -88,23 +89,34 @@ class CsvFileSource extends FileSourceAbstract
     protected function parseLanguageFile($languageAlias)
     {
         $translates = [];
-
-        if (!file_exists($this->getDirectoryPath()) || !is_dir($this->getDirectoryPath())) {
-            throw new DirectoryNotFoundException('Directory not found ' . $this->getDirectoryPath());
+        foreach ($this->iterateTranslationFileData($languageAlias) as $languageFileData) {
+            $translates[$languageFileData[0]] = isset($languageFileData[1]) ? $languageFileData[1] : '';
         }
 
-        $languageFile = $this->getLanguageFilePath($languageAlias);
+        return $translates;
+    }
 
-        if (file_exists($languageFile)) {
-            if (!is_readable($languageFile)) {
-                throw new FileReadPermissionsException('Cannot read file ' . $languageFile);
-            }
+    const INDEXED_BY_ID = 'id';
+    const INDEXED_BY_ORIGINAL_CONTENT = 'original';
 
-            $fileResource = fopen($languageFile, 'rb');
-            while (($data = fgetcsv($fileResource, 0, $this->delimiter)) !== false) {
-                $translates[$data[0]] = isset($data[1]) ? $data[1] : '';
+    public function parseOriginalsLanguageRowsIds($indexedBy = self::INDEXED_BY_ID)
+    {
+        $translates = [];
+        foreach ($this->iterateTranslationFileData($this->originalLanguageAlias) as $languageFileData) {
+            switch ($indexedBy) {
+                case self::INDEXED_BY_ID:
+                    $key = $languageFileData[2];
+                    $value = $languageFileData[0];
+                    break;
+                case self::INDEXED_BY_ORIGINAL_CONTENT:
+                    $key = $languageFileData[0];
+                    $value = $languageFileData[2];
+                    break;
+                default:
+                    throw new RuntimeException('Undefined "indexBy" type');
+                    break;
             }
-            fclose($fileResource);
+            $translates[$key] = $value;
         }
 
         return $translates;
@@ -121,7 +133,8 @@ class CsvFileSource extends FileSourceAbstract
         $fileResource = fopen($filePath, 'wb');
 
         foreach ($translatesData as $original => $translate) {
-            fputcsv($fileResource, [$original, $translate], $this->delimiter);
+            $id = $this->getNextIncrementId();
+            fputcsv($fileResource, [$original, $translate, $id], $this->delimiter);
         }
 
         fclose($fileResource);
@@ -214,6 +227,43 @@ class CsvFileSource extends FileSourceAbstract
     }
 
     /**
+     * @param string[] $phrases
+     * @return string[]
+     */
+    public function getOriginalsIds(array $phrases): array
+    {
+        $originalContentWithId = $this->parseOriginalsLanguageRowsIds(self::INDEXED_BY_ORIGINAL_CONTENT);
+
+        $result = [];
+        foreach ($phrases as $phrase) {
+            if (isset($originalContentWithId[$phrase])) {
+                $result[$phrase] = $originalContentWithId[$phrase];
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * @param string[] $originalsIds
+     * @return string[]
+     */
+    public function getOriginalsByIds(array $originalsIds): array
+    {
+        $idWithOriginalContent = $this->parseOriginalsLanguageRowsIds(self::INDEXED_BY_ID);
+
+        $result = [];
+        foreach ($originalsIds as $searchedId) {
+            if (isset($idWithOriginalContent[$searchedId])) {
+                $result[$searchedId] = $idWithOriginalContent[$searchedId];
+                $result[$searchedId] = $idWithOriginalContent[$searchedId];
+            }
+        }
+
+        return $result;
+    }
+
+    /**
      * @param string $translationLanguageAlias
      * @param int $offset
      * @param null $limit
@@ -242,5 +292,30 @@ class CsvFileSource extends FileSourceAbstract
         }
 
         return $originalsWithoutTranslationCollection;
+    }
+
+    /**
+     * @param $languageAlias
+     * @return \Generator
+     */
+    protected function iterateTranslationFileData($languageAlias)
+    {
+        if (!file_exists($this->getDirectoryPath()) || !is_dir($this->getDirectoryPath())) {
+            throw new DirectoryNotFoundException('Directory not found ' . $this->getDirectoryPath());
+        }
+
+        $languageFile = $this->getLanguageFilePath($languageAlias);
+
+        if (file_exists($languageFile)) {
+            if (!is_readable($languageFile)) {
+                throw new FileReadPermissionsException('Cannot read file ' . $languageFile);
+            }
+
+            $fileResource = fopen($languageFile, 'rb');
+            while (($data = fgetcsv($fileResource, 0, $this->delimiter)) !== false) {
+                yield $data;
+            }
+            fclose($fileResource);
+        }
     }
 }

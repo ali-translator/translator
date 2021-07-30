@@ -200,4 +200,43 @@ class SourceTest extends TestCase
             ], $originalsWithoutTranslate->getAll());
         }
     }
+
+    public function testWorkWithIds()
+    {
+        $originals = [
+            'Hello {name}',
+            'Hi {name}',
+            'He has bigger fish to fry',
+            'Good things come to those who wait',
+        ];
+
+        $sourceFactory = new SourceFactory();
+        foreach ($sourceFactory::$allSourcesTypes as $sourceType) {
+            $source = $sourceFactory->generateSource($sourceType, 'en', true);
+
+            $originalsIds = $source->getOriginalsIds($originals);
+            static::assertEmpty($originalsIds);
+
+            $source->saveOriginals($originals);
+
+            $originalsIds = $source->getOriginalsIds([]);
+            static::assertEmpty($originalsIds);
+
+            $originalsIds = $source->getOriginalsIds($originals);
+            static::assertCount(count($originals), $originalsIds);
+            $originalsIdsKeys = array_keys($originalsIds);
+            static::assertEmpty(array_diff($originalsIdsKeys, $originals));
+
+            $searchedOriginals = $source->getOriginalsByIds($originalsIds);
+            static::assertCount(count($originals), $searchedOriginals);
+            static::assertEmpty(array_diff($searchedOriginals, $originals));
+
+            foreach ($originals as $original) {
+                $source->delete($original);
+            }
+
+            $originalsIds = $source->getOriginalsIds($originals);
+            static::assertEmpty($originalsIds);
+        }
+    }
 }

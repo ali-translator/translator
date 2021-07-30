@@ -2,7 +2,7 @@
 
 namespace ALI\Translator\Exceptions;
 
-class ALIException extends \Exception
+class ALIException extends \RuntimeException
 {
 
 }

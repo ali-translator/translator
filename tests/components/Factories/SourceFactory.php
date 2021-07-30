@@ -18,17 +18,6 @@ class SourceFactory
     public static $allSourcesTypes = [self::SOURCE_MYSQL, self::SOURCE_CSV];
 
     /**
-     * @return PDO
-     */
-    public function createPDO()
-    {
-        $connection = new PDO(SOURCE_MYSQL_DNS, SOURCE_MYSQL_USER, SOURCE_MYSQL_PASSWORD);
-        $connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-        return $connection;
-    }
-
-    /**
      * @param $originalLanguageAlias
      * @param bool $recreate
      * @return \Generator|SourceInterface[]
@@ -66,7 +55,7 @@ class SourceFactory
      * @param SourceInterface $source
      * @return string
      */
-    public function getSourceTypeBySource($source)
+    public function getSourceTypeBySource($source): string
     {
         $sourceClasses = [
             MySqlSource::class => self::SOURCE_MYSQL,
@@ -99,5 +88,16 @@ class SourceFactory
         if ($needInstall) {
             $sourceInstaller->install();
         }
+    }
+
+    /**
+     * @return PDO
+     */
+    protected function createPDO(): PDO
+    {
+        $connection = new PDO(SOURCE_MYSQL_DNS, SOURCE_MYSQL_USER, SOURCE_MYSQL_PASSWORD);
+        $connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+        return $connection;
     }
 }
