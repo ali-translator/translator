@@ -20,6 +20,14 @@ $translationLanguageAlias = 'ru';
 
 $connection = new PDO(SOURCE_MYSQL_DNS, SOURCE_MYSQL_USER, SOURCE_MYSQL_PASSWORD);
 $source = new MySqlSource($connection, $originalLanguageAlias);
+
+// Install source
+$installer = $source->generateInstaller();
+if($installer->isInstalled()){
+    $installer->install();
+    // $installer->destroy();
+}
+
 $plainTranslator = (new PlainTranslatorFactory())->createPlainTranslator($source, $translationLanguageAlias);
 
 $plainTranslator->saveTranslate('Hello','Привет');
@@ -123,6 +131,39 @@ $plainPhraseTranslatorDecorator->saveTranslate('Hello 123 Hi 000', 'Привіт
 // and when translate text with another numbers, you get previous saved translation
 $plainPhraseTranslatorDecorator->translate('Hello 555 Hi 8676');
 // -> 'Привіт 555 Хай 8676'
+```
+
+### Originals grouping
+Optionality, you can add group to the originals. This can be useful for cases, when many different processes adding originals,
+and then when one of these processes removes its dependencies form them, to deciding whether to remove the original from the translator - use the groups.
+If original now does not have any group - remove them.
+
+```php
+use ALI\Translator\OriginalGroups\Repository\Mysql\MysqlOriginalGroupRepository;
+use ALI\Translator\OriginalGroups\Repository\Mysql\MySqlRepositoryConfig;
+use ALI\Translator\Source\SourceInterface;
+use \PDO;
+
+/** @var SourceInterface $translatorSource */
+/** @var PDO $pdo */
+
+$mysqlConfig = new MySqlRepositoryConfig($pdo);
+$groupRepositories = new MysqlOriginalGroupRepository($mysqlConfig, $translatorSource);
+
+// Installing
+$installer = $groupRepositories->generateInstaller();
+if(!$installer->isInstalled()){
+    $installer->install();
+    // $installer->destroy();
+}
+
+// Use cases
+$groupRepositories->addGroups(['Hello world','test'],['default','models']);
+$groupRepositories->getGroups(['Hello world','test']);
+$groupRepositories->getOriginalsByGroup('default', 0 , 20);
+
+$groupRepositories->removeGroups(['Hello world','test'],['default']);
+$groupRepositories->removeAllGroups(['Hello world','test']);
 ```
 
 #### Available sources

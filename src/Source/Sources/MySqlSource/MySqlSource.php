@@ -385,7 +385,6 @@ class MySqlSource implements SourceInterface
             ];
             switch ($type) {
                 case 'select':
-//                    $queryParts[$keyForBinding] = '(o.`content_index`=:' . $contentIndexKey . ' AND BINARY o.`content`=:' . $contentKey . ')';
                     $queryParts[$keyForBinding] = ':' . $contentIndexKey;
                     break;
                 case 'insert':
