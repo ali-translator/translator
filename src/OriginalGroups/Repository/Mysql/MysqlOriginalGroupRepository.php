@@ -44,7 +44,7 @@ class MysqlOriginalGroupRepository implements OriginalGroupRepositoryInterface
         list($valuesQuery, $valuesForWhereBinding) = $this->prepareParamsForInserQuery($originalsIds, $groups);
 
         $statement = $this->mySqlRepositoryConfig->getPdo()->prepare(
-            'INSERT INTO `' . $this->mySqlRepositoryConfig->getTableName() . '`
+            'INSERT IGNORE  INTO `' . $this->mySqlRepositoryConfig->getTableName() . '`
                         (`group_alias`,`language_alias`,`original_id`)
                             VALUES ' . implode(',', $valuesQuery)
         );

@@ -26,6 +26,8 @@ class OriginalGroupsTest extends TestCase
 
             // Add
             $groupRepository->addGroups($originalsContents, $defaultGroupsAliases);
+            // Duplicate adding, without error
+            $groupRepository->addGroups($originalsContents, $defaultGroupsAliases);
 
             // Check all added
             $this->checkOriginalsGroups($groupRepository, $originalsContents, $defaultGroupsAliases);

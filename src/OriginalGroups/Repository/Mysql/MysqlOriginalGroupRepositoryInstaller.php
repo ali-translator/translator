@@ -38,7 +38,7 @@ class MysqlOriginalGroupRepositoryInstaller implements OriginalGroupRepositoryIn
         $sqlCommand = 'CREATE TABLE ' . $this->mySqlRepositoryConfig->getTableName() . ' (
   id int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   language_alias CHAR(2) NOT NULL,
-  original_id TEXT NOT NULL,
+  original_id int(11) UNSIGNED NOT NULL,
   group_alias varchar(20) NOT NULL,
   PRIMARY KEY (id)
 )
@@ -47,7 +47,7 @@ CHARACTER SET utf8mb4,
 COLLATE utf8mb4_general_ci;
 
 ALTER TABLE ' . $this->mySqlRepositoryConfig->getTableName() . '
-ADD UNIQUE INDEX UK_aog__original__language (original_id, language_alias);';
+ADD UNIQUE INDEX UK_aog__original__language (original_id, language_alias, group_alias);';
         $this->mySqlRepositoryConfig->getPdo()->exec($sqlCommand);
     }
 
