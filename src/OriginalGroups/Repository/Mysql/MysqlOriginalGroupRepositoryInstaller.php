@@ -39,7 +39,7 @@ class MysqlOriginalGroupRepositoryInstaller implements OriginalGroupRepositoryIn
   id int(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   language_alias CHAR(2) NOT NULL,
   original_id int(11) UNSIGNED NOT NULL,
-  group_alias varchar(20) NOT NULL,
+  group_alias varchar(100) NOT NULL,
   PRIMARY KEY (id)
 )
 ENGINE = INNODB,
