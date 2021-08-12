@@ -82,10 +82,25 @@ class MySqlLanguageRepository implements LanguageRepositoryInterface
                 SELECT * FROM `' . $this->languageTableName . '`' . ($onlyActive ? ' WHERE is_active=1' : null) . '
             ');
         $statement->execute();
-        $languagesData = $statement->fetchAll();
 
         $languages = [];
-        foreach ($languagesData as $languageData) {
+        foreach ($statement->fetchAll() as $languageData) {
+            $languages[] = $this->generateLanguageObject($languageData);
+        }
+
+        return $languages;
+    }
+
+    /**
+     * @return LanguageInterface[]
+     */
+    public function getInactiveLanguages(): array
+    {
+        $statement = $this->pdo->prepare('SELECT * FROM `' . $this->languageTableName . '` WHERE `is_active`=0');
+        $statement->execute();
+
+        $languages = [];
+        foreach ($statement->fetchAll() as $languageData) {
             $languages[] = $this->generateLanguageObject($languageData);
         }
 

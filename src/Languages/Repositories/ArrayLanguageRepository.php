@@ -70,4 +70,12 @@ class ArrayLanguageRepository implements LanguageRepositoryInterface
 
         return array_values($this->activeLanguages + $this->inactiveLanguages);
     }
+
+    /**
+     * @return LanguageInterface[]
+     */
+    public function getInactiveLanguages(): array
+    {
+        return $this->inactiveLanguages;
+    }
 }

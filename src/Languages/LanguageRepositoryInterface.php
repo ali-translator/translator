@@ -20,4 +20,9 @@ interface LanguageRepositoryInterface
      * @return LanguageInterface[]
      */
     public function getAll(bool $onlyActive): array;
+
+    /**
+     * @return LanguageInterface[]
+     */
+    public function getInactiveLanguages(): array;
 }
