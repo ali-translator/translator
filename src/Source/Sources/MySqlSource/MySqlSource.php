@@ -111,8 +111,8 @@ class MySqlSource implements SourceInterface
                 FROM `' . $this->originalTableName . '` AS `o`
                 FORCE INDEX(indexContentIndex)
                 LEFT JOIN `' . $this->translateTableName . '` AS `t` ON (`o`.`id`=`t`.`original_id` AND `t`.`language_alias`=:translationLanguageAlias)
-            WHERE o.`content_index` IN (' . implode(', ', $whereQuery) . ') AND `o`.`language_alias`=:originalLanguageAlias
-            LIMIT ' . count($phrases)
+            WHERE o.`content_index` IN (' . implode(', ', $whereQuery) . ') AND `o`.`language_alias`=:originalLanguageAlias'
+//            LIMIT ' . count($phrases) // may be few originals with the same `content_index`
         );
         $dataQuery->bindValue('translationLanguageAlias', $languageAlias, PDO::PARAM_STR);
         $dataQuery->bindValue('originalLanguageAlias', $this->originalLanguageAlias, PDO::PARAM_STR);
