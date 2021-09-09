@@ -172,9 +172,9 @@ $groupRepositories->removeAllGroups(['Hello world','test']);
 
 ### Languages
 For convenience, a couple of classes are integrated into this package to help with languages.<br>
-`LanguageInterface` - Has `getTitle()` and `getAlias()`methods<br>
-`LanguageRepositoryInterface` - Has `save(LanguageInterface $language, $isActive)`, `find($alias)`, `getAll($onlyActive)` methods.<br>
-And realization for repository interface: `ArrayLanguageRepository`(`ArrayLanguageRepositoryFactory`) and `MySqlLanguageRepository`(`MySqlLanguageRepositoryInstaller`)
+`LanguageInterface` - Has `getTitle()`, `getIsoCode()` and `getAlias()`methods<br>
+`LanguageRepositoryInterface` - Has `save(LanguageInterface $language, $isActive)`, `find($alias)`, `findByIsoCode($isoCode)`, `getAll($onlyActive)` methods.<br>
+And realizations for repository interface: `ArrayLanguageRepository`(`ArrayLanguageRepositoryFactory`) and `MySqlLanguageRepository`
 
 ### Suggest packets
 * <b>[ali-translator/buffered-translation](https://github.com/ali-translator/buffered-translation)</b> - Manually pasted text on document for translation, by means of buffering is translated by one approach (helpful for DB sources)
