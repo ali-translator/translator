@@ -2,12 +2,13 @@
 
 namespace ALI\Translator\Languages\Repositories\Installers;
 
+use ALI\Translator\Languages\LanguageRepositoryInstallerInterface;
 use PDO;
 
 /**
  * Class
  */
-class MySqlLanguageRepositoryInstaller
+class MySqlLanguageRepositoryInstaller implements LanguageRepositoryInstallerInterface
 {
     /**
      * @var PDO
@@ -32,7 +33,7 @@ class MySqlLanguageRepositoryInstaller
     /**
      * @return bool
      */
-    public function isInstalled()
+    public function isInstalled(): bool
     {
         $query = $this->pdo->prepare(
             'select COUNT(*) from information_schema.tables where table_schema=DATABASE() AND (TABLE_NAME=:tableLanguage)'
@@ -50,6 +51,7 @@ class MySqlLanguageRepositoryInstaller
     {
         $sqlCommand = 'CREATE TABLE ' . $this->languageTableName . ' (
   alias varchar(4) NOT NULL,
+  iso_code varchar(4) NOT NULL,
   title varchar(64) NOT NULL DEFAULT \'\',
   is_active tinyint(1) NOT NULL,
   PRIMARY KEY (alias)
@@ -62,6 +64,9 @@ class MySqlLanguageRepositoryInstaller
 
         $sqlCommand = 'ALTER TABLE ' . $this->languageTableName . '
 ADD UNIQUE INDEX UK_ali_lang_alias (alias);';
+        $this->pdo->exec($sqlCommand);
+        $sqlCommand = 'ALTER TABLE ' . $this->languageTableName . '
+ADD UNIQUE INDEX UK_ali_lang_iso_code (iso_code);';
         $this->pdo->exec($sqlCommand);
     }
 

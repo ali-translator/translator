@@ -10,7 +10,7 @@ class Language implements LanguageInterface
     /**
      * @var string
      */
-    protected $alias;
+    protected $isoCode;
 
     /**
      * @var string
@@ -18,36 +18,34 @@ class Language implements LanguageInterface
     protected $title;
 
     /**
-     * @param string $alias
-     * @param string $title
+     * @var string
      */
-    public function __construct(string $alias, string $title = '')
+    protected $alias;
+
+    public function __construct(string $isoCode, string $title = '', string $alias = '')
     {
-        $this->alias = $alias;
+        $this->isoCode = $isoCode;
         $this->title = $title;
+        $this->alias = $alias ?: $isoCode;
     }
 
-    /**
-     * @return string
-     */
-    public function getAlias(): string
+    public function getIsoCode(): string
     {
-        return $this->alias;
+        return $this->isoCode;
     }
 
-    /**
-     * @return string
-     */
     public function getTitle(): string
     {
         return $this->title;
     }
 
-    /**
-     * @return string
-     */
-    public function __toString()
+    public function getAlias(): string
     {
-        return $this->getAlias();
+        return $this->alias;
+    }
+
+    public function __toString(): string
+    {
+        return $this->getIsoCode();
     }
 }

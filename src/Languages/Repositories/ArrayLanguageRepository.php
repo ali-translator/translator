@@ -3,7 +3,9 @@
 namespace ALI\Translator\Languages\Repositories;
 
 use ALI\Translator\Languages\LanguageInterface;
+use ALI\Translator\Languages\LanguageRepositoryInstallerInterface;
 use ALI\Translator\Languages\LanguageRepositoryInterface;
+use ALI\Translator\Languages\Repositories\Installers\NullLanguageRepositoryInstaller;
 
 /**
  * This repository may use, when your save your languages in config file,
@@ -21,11 +23,15 @@ class ArrayLanguageRepository implements LanguageRepositoryInterface
      */
     protected $inactiveLanguages = [];
 
+    protected $isoCodeVsAlias = [];
+
     /**
      * @inheritDoc
      */
-    public function save(LanguageInterface $language,bool $isActive): bool
+    public function save(LanguageInterface $language, bool $isActive): bool
     {
+        $this->isoCodeVsAlias[$language->getIsoCode()] = $language->getAlias();
+
         if ($isActive) {
             $this->activeLanguages[$language->getAlias()] = $language;
             if (isset($this->inactiveLanguages[$language->getAlias()])) {
@@ -59,6 +65,20 @@ class ArrayLanguageRepository implements LanguageRepositoryInterface
     }
 
     /**
+     * @param string $isoCode
+     * @return LanguageInterface|null
+     */
+    public function findByIsoCode(string $isoCode)
+    {
+        $languageAlias = $this->isoCodeVsAlias[$isoCode] ?? null;
+        if (!$languageAlias) {
+            return null;
+        }
+
+        return $this->find($languageAlias);
+    }
+
+    /**
      * @param bool $onlyActive
      * @return LanguageInterface[]
      */
@@ -77,5 +97,13 @@ class ArrayLanguageRepository implements LanguageRepositoryInterface
     public function getInactiveLanguages(): array
     {
         return $this->inactiveLanguages;
+    }
+
+    /**
+     * @inheritDoc
+     */
+    public function generateInstaller(): LanguageRepositoryInstallerInterface
+    {
+        return new NullLanguageRepositoryInstaller();
     }
 }

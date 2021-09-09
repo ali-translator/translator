@@ -4,8 +4,10 @@ namespace ALI\Translator\Languages\Repositories;
 
 use ALI\Translator\Languages\Language;
 use ALI\Translator\Languages\LanguageInterface;
+use ALI\Translator\Languages\LanguageRepositoryInstallerInterface;
 use ALI\Translator\Languages\LanguageRepositoryInterface;
-use PDO;
+use ALI\Translator\Languages\Repositories\Installers\MySqlLanguageRepositoryInstaller;
+use \PDO;
 
 /**
  * MySqlLanguageRepository
@@ -39,14 +41,14 @@ class MySqlLanguageRepository implements LanguageRepositoryInterface
      */
     public function save(LanguageInterface $language, bool $isActive): bool
     {
-        $isActive = (int)$isActive;
         $statement = $this->pdo->prepare('
-                INSERT `' . $this->languageTableName . '` (`is_active`, `alias`, `title`) VALUES (:isActive, :alias, :title)
+                INSERT `' . $this->languageTableName . '` (`is_active`, `alias`, `title`,`iso_code`) VALUES (:isActive, :alias, :title, :isoCode)
                 ON DUPLICATE KEY UPDATE `title`=:title, `is_active`=:isActive
             ');
-        $statement->bindValue('isActive', $isActive);
+        $statement->bindValue('isActive', (int)$isActive);
         $statement->bindValue('alias', $language->getAlias());
         $statement->bindValue('title', $language->getTitle());
+        $statement->bindValue('isoCode', $language->getIsoCode());
 
         return $statement->execute();
     }
@@ -58,10 +60,30 @@ class MySqlLanguageRepository implements LanguageRepositoryInterface
     public function find(string $alias)
     {
         $statement = $this->pdo->prepare('
-                SELECT * FROM `' . $this->languageTableName . '` WHERE alias=:alias
+                SELECT * FROM `' . $this->languageTableName . '` WHERE alias=:alias LIMIT 1
             ');
 
         $statement->bindValue('alias', $alias);
+        $statement->execute();
+        $languageData = $statement->fetch();
+        if (!$languageData) {
+            return null;
+        }
+
+        return $this->generateLanguageObject($languageData);
+    }
+
+    /**
+     * @param string $alias
+     * @return LanguageInterface|null
+     */
+    public function findByIsoCode(string $isoCode)
+    {
+        $statement = $this->pdo->prepare('
+                SELECT * FROM `' . $this->languageTableName . '` WHERE iso_code=:isoCode LIMIT 1
+            ');
+
+        $statement->bindValue('isoCode', $isoCode);
         $statement->execute();
         $languageData = $statement->fetch();
         if (!$languageData) {
@@ -113,6 +135,11 @@ class MySqlLanguageRepository implements LanguageRepositoryInterface
      */
     protected function generateLanguageObject(array $languageData)
     {
-        return new Language($languageData['alias'], $languageData['title']);
+        return new Language($languageData['iso_code'], $languageData['title'], $languageData['alias']);
+    }
+
+    public function generateInstaller(): LanguageRepositoryInstallerInterface
+    {
+        return new MySqlLanguageRepositoryInstaller($this->pdo, $this->languageTableName);
     }
 }

@@ -42,7 +42,7 @@ class SourceFactory
                 $source = new CsvFileSource(SOURCE_CSV_PATH, $originalLanguageAlias);
                 break;
             case self::SOURCE_MYSQL:
-                $source = new MySqlSource($this->createPDO(), $originalLanguageAlias);
+                $source = new MySqlSource((new PdoFactory())->generate(), $originalLanguageAlias);
                 break;
         }
 
@@ -88,16 +88,5 @@ class SourceFactory
         if ($needInstall) {
             $sourceInstaller->install();
         }
-    }
-
-    /**
-     * @return PDO
-     */
-    protected function createPDO(): PDO
-    {
-        $connection = new PDO(SOURCE_MYSQL_DNS, SOURCE_MYSQL_USER, SOURCE_MYSQL_PASSWORD);
-        $connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
-        return $connection;
     }
 }

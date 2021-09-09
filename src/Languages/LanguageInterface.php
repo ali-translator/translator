@@ -14,7 +14,14 @@ interface LanguageInterface
     public function getTitle(): string;
 
     /**
-     * Language alias (ru, en)
+     * Language iso code (ru, en, uk)
+     * @return string
+     */
+    public function getIsoCode(): string;
+
+    /**
+     * For example, use 'ua' alias for language with 'uk' iso code
+     *
      * @return string
      */
     public function getAlias(): string;

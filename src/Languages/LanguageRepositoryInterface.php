@@ -16,6 +16,12 @@ interface LanguageRepositoryInterface
     public function find(string $alias);
 
     /**
+     * @param string $alias
+     * @return null|LanguageInterface
+     */
+    public function findByIsoCode(string $isoCode);
+
+    /**
      * @param bool $onlyActive
      * @return LanguageInterface[]
      */
@@ -25,4 +31,9 @@ interface LanguageRepositoryInterface
      * @return LanguageInterface[]
      */
     public function getInactiveLanguages(): array;
+
+    /**
+     * @return LanguageRepositoryInstallerInterface
+     */
+    public function generateInstaller(): LanguageRepositoryInstallerInterface;
 }
