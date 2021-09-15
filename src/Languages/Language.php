@@ -22,7 +22,12 @@ class Language implements LanguageInterface
      */
     protected $alias;
 
-    public function __construct(string $isoCode, string $title = '', string $alias = '')
+    /**
+     * @param string $isoCode
+     * @param string $title
+     * @param null|string $alias
+     */
+    public function __construct(string $isoCode, string $title = '', $alias = null)
     {
         $this->isoCode = $isoCode;
         $this->title = $title;

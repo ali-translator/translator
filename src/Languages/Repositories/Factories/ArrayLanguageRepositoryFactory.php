@@ -11,7 +11,7 @@ use ALI\Translator\Languages\Repositories\ArrayLanguageRepository;
 class ArrayLanguageRepositoryFactory
 {
     /**
-     * languagesData : ['isoCode'=>'title',...]
+     * languagesData : ['isoCode'=>'Title', 'isoCode'=>['title'=>'Title','alias' => 'Alias'], ...]
      *
      * @param array $activeLanguagesData
      * @param array $inActiveLanguagesData
@@ -20,13 +20,28 @@ class ArrayLanguageRepositoryFactory
     public function createArrayLanguageRepository(array $activeLanguagesData = [], array $inActiveLanguagesData = []): ArrayLanguageRepository
     {
         $arrayLanguageRepository = new ArrayLanguageRepository();
-        foreach ($activeLanguagesData as $alias => $title) {
-            $arrayLanguageRepository->save((new Language($alias, $title)), true);
+        foreach ($activeLanguagesData as $isoCode => $data) {
+            $language = $this->generateLanguageByData($isoCode, $data);
+            $arrayLanguageRepository->save($language, true);
         }
-        foreach ($inActiveLanguagesData as $alias => $title) {
-            $arrayLanguageRepository->save((new Language($alias, $title)), false);
+        foreach ($inActiveLanguagesData as $isoCode => $data) {
+            $language = $this->generateLanguageByData($isoCode, $data);
+            $arrayLanguageRepository->save($language, false);
         }
 
         return $arrayLanguageRepository;
+    }
+
+    protected function generateLanguageByData(string $isoCode, $data)
+    {
+        if (is_string($data)) {
+            $title = $data;
+            $alias = null;
+        } else {
+            $title = $data['title'] ?? null;
+            $alias = $data['alias'] ?? null;;
+        }
+
+        return new Language($isoCode, $title, $alias);
     }
 }
