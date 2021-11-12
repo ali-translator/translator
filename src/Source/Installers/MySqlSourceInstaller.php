@@ -66,17 +66,16 @@ class MySqlSourceInstaller implements SourceInstallerInterface
     private function installOriginalTable()
     {
         $sqlCommand = 'CREATE TABLE ' . $this->originalTableName . ' (
-  id      INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
+  id INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   language_alias CHAR(2) NOT NULL,
-  content_index VARCHAR(64) BINARY CHARACTER SET utf8mb4
-          COLLATE utf8mb4_bin NOT NULL COMMENT \'System column for indexation\',
-  content TEXT             NOT NULL,
+  content_index VARCHAR(64) NOT NULL COMMENT \'System column for indexation\',
+  content TEXT NOT NULL,
   PRIMARY KEY (id),
   INDEX indexContentIndex (content_index)
 )
   ENGINE = INNODB
   CHARACTER SET utf8mb4
-  COLLATE utf8mb4_general_ci';
+  COLLATE utf8mb4_bin';
         $this->pdo->exec($sqlCommand);
     }
 
@@ -98,7 +97,7 @@ class MySqlSourceInstaller implements SourceInstallerInterface
 )
   ENGINE = INNODB
   CHARACTER SET utf8mb4
-  COLLATE utf8mb4_general_ci';
+  COLLATE utf8mb4_unicode_ci';
         $this->pdo->exec($sqlCommand);
     }
 
