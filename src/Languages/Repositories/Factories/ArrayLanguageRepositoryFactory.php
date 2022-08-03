@@ -11,7 +11,7 @@ use ALI\Translator\Languages\Repositories\ArrayLanguageRepository;
 class ArrayLanguageRepositoryFactory
 {
     /**
-     * languagesData : ['isoCode'=>'Title', 'isoCode'=>['title'=>'Title','alias' => 'Alias'], ...]
+     * languagesData : ['isoCode'=>'Title', 'isoCode'=> [ 'title'=>'Title', 'alias' => 'Alias','additionalInformation' => []], ...]
      *
      * @param array $activeLanguagesData
      * @param array $inActiveLanguagesData
@@ -37,11 +37,13 @@ class ArrayLanguageRepositoryFactory
         if (is_string($data)) {
             $title = $data;
             $alias = null;
+            $additionalInformation = [];
         } else {
             $title = $data['title'] ?? null;
-            $alias = $data['alias'] ?? null;;
+            $alias = $data['alias'] ?? null;
+            $additionalInformation = $data['additionalInformation'] ?? [];
         }
 
-        return new Language($isoCode, $title, $alias);
+        return new Language($isoCode, $title, $alias, $additionalInformation);
     }
 }

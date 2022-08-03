@@ -23,15 +23,21 @@ class Language implements LanguageInterface
     protected $alias;
 
     /**
-     * @param string $isoCode
-     * @param string $title
-     * @param null|string $alias
+     * @var array
      */
-    public function __construct(string $isoCode, string $title = '', $alias = null)
+    private $additionalInformation;
+
+    public function __construct(
+        string $isoCode,
+        string $title = '',
+               $alias = null,
+        array  $additionalInformation = []
+    )
     {
         $this->isoCode = $isoCode;
         $this->title = $title;
         $this->alias = $alias ?: $isoCode;
+        $this->additionalInformation = $additionalInformation;
     }
 
     public function getIsoCode(): string
@@ -47,6 +53,11 @@ class Language implements LanguageInterface
     public function getAlias(): string
     {
         return $this->alias;
+    }
+
+    public function getAdditionalInformation(): array
+    {
+        return $this->additionalInformation;
     }
 
     public function __toString(): string

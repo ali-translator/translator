@@ -25,4 +25,9 @@ interface LanguageInterface
      * @return string
      */
     public function getAlias(): string;
+
+    /**
+     * @return array
+     */
+    public function getAdditionalInformation(): array;
 }

@@ -42,13 +42,14 @@ class MySqlLanguageRepository implements LanguageRepositoryInterface
     public function save(LanguageInterface $language, bool $isActive): bool
     {
         $statement = $this->pdo->prepare('
-                INSERT `' . $this->languageTableName . '` (`is_active`, `alias`, `title`,`iso_code`) VALUES (:isActive, :alias, :title, :isoCode)
+                INSERT `' . $this->languageTableName . '` (`is_active`, `alias`, `title`,`iso_code`, `additional_information`) VALUES (:isActive, :alias, :title, :isoCode, :additionalInformation)
                 ON DUPLICATE KEY UPDATE `title`=:title, `is_active`=:isActive
             ');
         $statement->bindValue('isActive', (int)$isActive);
         $statement->bindValue('alias', $language->getAlias());
         $statement->bindValue('title', $language->getTitle());
         $statement->bindValue('isoCode', $language->getIsoCode());
+        $statement->bindValue('additionalInformation', serialize($language->getAdditionalInformation()));
 
         return $statement->execute();
     }
@@ -135,7 +136,18 @@ class MySqlLanguageRepository implements LanguageRepositoryInterface
      */
     protected function generateLanguageObject(array $languageData)
     {
-        return new Language($languageData['iso_code'], $languageData['title'], $languageData['alias']);
+        if (isset($languageData['additional_information'])) {
+            $additionalInformation = unserialize($languageData['additional_information']);
+        } else {
+            $additionalInformation = [];
+        }
+
+        return new Language(
+            $languageData['iso_code'],
+            $languageData['title'],
+            $languageData['alias'],
+            $additionalInformation
+        );
     }
 
     public function generateInstaller(): LanguageRepositoryInstallerInterface

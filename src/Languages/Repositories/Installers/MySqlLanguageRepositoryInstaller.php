@@ -20,19 +20,12 @@ class MySqlLanguageRepositoryInstaller implements LanguageRepositoryInstallerInt
      */
     protected $languageTableName;
 
-    /**
-     * @param PDO $pdo
-     * @param string $languageTableName
-     */
-    public function __construct(PDO $pdo, $languageTableName = 'ali_language')
+    public function __construct(PDO $pdo, string $languageTableName = 'ali_language')
     {
         $this->pdo = $pdo;
         $this->languageTableName = $languageTableName;
     }
 
-    /**
-     * @return bool
-     */
     public function isInstalled(): bool
     {
         $query = $this->pdo->prepare(
@@ -44,15 +37,13 @@ class MySqlLanguageRepositoryInstaller implements LanguageRepositoryInstallerInt
         return (int)$query->fetchColumn() === 1;
     }
 
-    /**
-     * Install
-     */
     public function install()
     {
         $sqlCommand = 'CREATE TABLE ' . $this->languageTableName . ' (
   alias varchar(4) NOT NULL,
   iso_code varchar(4) NOT NULL,
   title varchar(64) NOT NULL DEFAULT \'\',
+  additional_information varchar(1000) NOT NULL DEFAULT \'\',
   is_active tinyint(1) NOT NULL,
   PRIMARY KEY (alias)
 )
@@ -70,9 +61,6 @@ ADD UNIQUE INDEX UK_ali_lang_iso_code (iso_code);';
         $this->pdo->exec($sqlCommand);
     }
 
-    /**
-     * Destroy MySql schema
-     */
     public function destroy()
     {
         $this->pdo->exec('DROP table ' . $this->languageTableName);
