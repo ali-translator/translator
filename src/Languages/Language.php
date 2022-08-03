@@ -5,7 +5,7 @@ namespace ALI\Translator\Languages;
 /**
  * Language
  */
-class Language implements LanguageInterface
+class Language implements LanguageInterface, LanguageConstructorInterface
 {
     /**
      * @var string

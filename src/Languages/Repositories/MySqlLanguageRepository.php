@@ -3,6 +3,7 @@
 namespace ALI\Translator\Languages\Repositories;
 
 use ALI\Translator\Languages\Language;
+use ALI\Translator\Languages\LanguageConstructorInterface;
 use ALI\Translator\Languages\LanguageInterface;
 use ALI\Translator\Languages\LanguageRepositoryInstallerInterface;
 use ALI\Translator\Languages\LanguageRepositoryInterface;
@@ -25,13 +26,19 @@ class MySqlLanguageRepository implements LanguageRepositoryInterface
     protected $languageTableName;
 
     /**
-     * @param PDO $pdo
-     * @param string $languageTableName
+     * @var string|LanguageInterface|LanguageConstructorInterface
      */
-    public function __construct(PDO $pdo, $languageTableName = 'ali_language')
+    protected $languageEntityClass;
+
+    public function __construct(
+        PDO $pdo,
+        string $languageTableName = 'ali_language',
+        string $languageEntityClass = Language::class
+    )
     {
         $this->pdo = $pdo;
         $this->languageTableName = $languageTableName;
+        $this->languageEntityClass = $languageEntityClass;
     }
 
     /**
@@ -132,9 +139,9 @@ class MySqlLanguageRepository implements LanguageRepositoryInterface
 
     /**
      * @param array $languageData
-     * @return Language
+     * @return LanguageInterface
      */
-    protected function generateLanguageObject(array $languageData)
+    protected function generateLanguageObject(array $languageData): LanguageInterface
     {
         if (isset($languageData['additional_information'])) {
             $additionalInformation = unserialize($languageData['additional_information']);
@@ -142,7 +149,7 @@ class MySqlLanguageRepository implements LanguageRepositoryInterface
             $additionalInformation = [];
         }
 
-        return new Language(
+        return new $this->languageEntityClass(
             $languageData['iso_code'],
             $languageData['title'],
             $languageData['alias'],
