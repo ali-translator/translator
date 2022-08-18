@@ -3,7 +3,6 @@
 namespace ALI\Translator\Source\Sources\MySqlSource;
 
 use ALI\Translator\PhraseCollection\OriginalPhraseCollection;
-use ALI\Translator\Source\Exceptions\SourceException;
 use ALI\Translator\Source\Installers\MySqlSourceInstaller;
 use ALI\Translator\Source\Installers\SourceInstallerInterface;
 use ALI\Translator\Source\SourceInterface;
@@ -45,9 +44,9 @@ class MySqlSource implements SourceInterface
      */
     public function __construct(
         PDO $pdo,
-        $originalLanguageAlias,
-        $originalTableName = 'ali_original',
-        $translateTableName = 'ali_translate'
+        string $originalLanguageAlias,
+        string $originalTableName = 'ali_original',
+        string $translateTableName = 'ali_translate'
     )
     {
         $this->pdo = $pdo;
@@ -76,32 +75,29 @@ class MySqlSource implements SourceInterface
      * @param string $phrase
      * @param string $languageAliasAlias
      * @return string|null
-     * @throws SourceException
-     * @throws Exception
      */
-    public function getTranslate(string $phrase, string $languageAliasAlias)
+    public function getTranslate(string $phrase, string $languageAliasAlias): ?string
     {
         $translates = $this->getTranslates([$phrase], $languageAliasAlias);
         if ($translates) {
             return current($translates);
         }
 
-        throw new SourceException('Empty list of translated phrases');
+        return null;
     }
 
     /**
      * @param array $phrases
      * @param string $languageAlias
-     * @return array|false
-     * @throws Exception
+     * @return string[]
      */
     public function getTranslates(array $phrases, string $languageAlias): array
     {
-        if ($languageAlias === $this->originalLanguageAlias) {
-            return array_combine($phrases, $phrases);
-        }
         if (!$phrases) {
             return [];
+        }
+        if ($languageAlias === $this->originalLanguageAlias) {
+            return array_combine($phrases, $phrases);
         }
 
         list($whereQuery, $valuesForWhereBinding) = $this->prepareParamsForQuery($phrases, 'select');
@@ -112,7 +108,7 @@ class MySqlSource implements SourceInterface
                 FORCE INDEX(indexContentIndex)
                 LEFT JOIN `' . $this->translateTableName . '` AS `t` ON (`o`.`id`=`t`.`original_id` AND `t`.`language_alias`=:translationLanguageAlias)
             WHERE o.`content_index` IN (' . implode(', ', $whereQuery) . ') AND `o`.`language_alias`=:originalLanguageAlias'
-//            LIMIT ' . count($phrases) // may be few originals with the same `content_index`
+            // LIMIT ' . count($phrases) // may be few originals with the same `content_index`
         );
         $dataQuery->bindValue('translationLanguageAlias', $languageAlias, PDO::PARAM_STR);
         $dataQuery->bindValue('originalLanguageAlias', $this->originalLanguageAlias, PDO::PARAM_STR);
@@ -121,15 +117,12 @@ class MySqlSource implements SourceInterface
 
         $dataQuery->execute();
 
+        $phrases = array_flip($phrases);
+
         $translates = [];
         while ($translateRow = $dataQuery->fetch(PDO::FETCH_ASSOC)) {
-            $translates[$translateRow['original']] = $translateRow['translate'];
-        }
-
-        //phrases that aren't in the database
-        foreach ($phrases as $phrase) {
-            if (!array_key_exists($phrase, $translates) || !$phrase) {
-                $translates[$phrase] = null;
+            if (isset($phrases[$translateRow['original']])) {
+                $translates[$translateRow['original']] = $translateRow['translate'];
             }
         }
 
@@ -294,9 +287,13 @@ class MySqlSource implements SourceInterface
 
         $dataQuery->execute();
 
+        $phrases = array_flip($phrases);
+
         $existPhrases = [];
         while ($existPhrase = $dataQuery->fetch(PDO::FETCH_ASSOC)) {
-            $existPhrases[] = $existPhrase['original'];
+            if (isset($phrases[$existPhrase['original']])) {
+                $existPhrases[] = $existPhrase['original'];
+            }
         }
 
         return $existPhrases;
@@ -308,7 +305,7 @@ class MySqlSource implements SourceInterface
             return [];
         }
 
-        list($whereQuery, $valuesForWhereBinding) = $this->prepareParamsForQuery($phrases, 'select');
+        [$whereQuery, $valuesForWhereBinding] = $this->prepareParamsForQuery($phrases, 'select');
 
         $dataQuery = $this->pdo->prepare(
             'SELECT o.`id`, o.`content` as `original`
@@ -321,11 +318,13 @@ class MySqlSource implements SourceInterface
 
         $dataQuery->execute();
 
+        $phrases = array_flip($phrases);
+
         $originalsWithIds = [];
         while ($existPhrase = $dataQuery->fetch(PDO::FETCH_ASSOC)) {
-            $originalContent = $existPhrase['original'];
-            $originalId = $existPhrase['id'];
-            $originalsWithIds[$originalContent] = $originalId;
+            if (isset($phrases[$existPhrase['original']])) {
+                $originalsWithIds[$existPhrase['original']] = $existPhrase['id'];
+            }
         }
 
         return $originalsWithIds;
