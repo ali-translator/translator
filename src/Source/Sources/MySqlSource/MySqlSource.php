@@ -79,11 +79,8 @@ class MySqlSource implements SourceInterface
     public function getTranslate(string $phrase, string $languageAliasAlias): ?string
     {
         $translates = $this->getTranslates([$phrase], $languageAliasAlias);
-        if ($translates) {
-            return current($translates);
-        }
 
-        return null;
+        return $translates[$phrase] ?? null;
     }
 
     /**
