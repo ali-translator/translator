@@ -11,9 +11,6 @@ use PDO;
 use ALI\Translator\Source\Exceptions\MySqlSource\LanguageNotExistsException;
 use PDOStatement;
 
-/**
- * Class
- */
 class MySqlSource implements SourceInterface
 {
     /**

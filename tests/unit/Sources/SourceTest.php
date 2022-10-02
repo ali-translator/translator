@@ -1,5 +1,7 @@
 <?php
 
+namespace ALI\Translator\Tests\unit\Sources;
+
 use ALI\Translator\Tests\components\Factories\LanguagesEnum;
 use ALI\Translator\Tests\components\Factories\SourceFactory;
 use ALI\Translator\Tests\components\SourceTester;
@@ -11,9 +13,6 @@ use ALI\Translator\Source\Exceptions\MySqlSource\LanguageNotExistsException;
 use ALI\Translator\Source\Exceptions\SourceException;
 use PHPUnit\Framework\TestCase;
 
-/**
- * SourceTest
- */
 class SourceTest extends TestCase
 {
     /**

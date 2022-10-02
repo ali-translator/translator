@@ -10,9 +10,6 @@ use ALI\Translator\Languages\LanguageRepositoryInterface;
 use ALI\Translator\Languages\Repositories\Installers\MySqlLanguageRepositoryInstaller;
 use \PDO;
 
-/**
- * MySqlLanguageRepository
- */
 class MySqlLanguageRepository implements LanguageRepositoryInterface
 {
     /**

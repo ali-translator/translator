@@ -10,7 +10,7 @@ class ArrayTranslatorHelper
         array $arrayForTranslation,
         array $columnsForTranslation,
         PlainTranslatorInterface $plainTranslator,
-        bool $withFallback = true
+        bool $withFallback
     )
     {
         $phrasesForTranslation = [];

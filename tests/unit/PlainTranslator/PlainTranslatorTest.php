@@ -1,5 +1,7 @@
 <?php
 
+namespace ALI\Translator\Tests\unit\PlainTranslator;
+
 use ALI\Translator\Tests\components\Factories\LanguagesEnum;
 use ALI\Translator\Tests\components\Factories\SourceFactory;
 use ALI\Translator\Source\Exceptions\SourceException;
@@ -7,9 +9,6 @@ use ALI\Translator\Source\SourceInterface;
 use ALI\Translator\PlainTranslator\PlainTranslatorFactory;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Class
- */
 class PlainTranslatorTest extends TestCase
 {
     /**
@@ -36,9 +35,9 @@ class PlainTranslatorTest extends TestCase
     {
         $translator = (new PlainTranslatorFactory())->createPlainTranslator($source, LanguagesEnum::TRANSLATION_LANGUAGE_ALIAS);
 
-        $this->assertEquals($translator->translate($originalPhrase), '');
+        $this->assertEquals($translator->translate($originalPhrase, false), '');
         $translator->saveTranslate($originalPhrase, $translatedPhrase);
-        $this->assertEquals($translator->translate($originalPhrase), $translatedPhrase);
+        $this->assertEquals($translator->translate($originalPhrase, false), $translatedPhrase);
         $translator->delete($originalPhrase);
     }
 

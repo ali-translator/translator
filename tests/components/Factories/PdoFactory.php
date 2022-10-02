@@ -6,9 +6,6 @@ use PDO;
 
 class PdoFactory
 {
-    /**
-     * @return PDO
-     */
     public function generate(): PDO
     {
         $connection = new PDO(SOURCE_MYSQL_DNS, SOURCE_MYSQL_USER, SOURCE_MYSQL_PASSWORD);

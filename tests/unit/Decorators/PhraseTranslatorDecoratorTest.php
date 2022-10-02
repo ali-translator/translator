@@ -1,5 +1,7 @@
 <?php
 
+namespace ALI\Translator\Tests\unit\Decorators;
+
 use ALI\Translator\Decorators\PhraseDecorators\OriginalDecorators\ReplaceNumbersOriginalDecorator;
 use ALI\Translator\Decorators\PhraseDecorators\OriginalPhraseDecoratorManager;
 use ALI\Translator\Decorators\PhraseDecorators\TranslateDecorators\RestoreNumbersTranslateDecorator;
@@ -11,9 +13,6 @@ use ALI\Translator\Tests\components\TranslatorTester;
 use ALI\Translator\Translator;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Class
- */
 class PhraseTranslatorDecoratorTest extends TestCase
 {
     public function testBaseProxyProcess()
@@ -47,13 +46,13 @@ class PhraseTranslatorDecoratorTest extends TestCase
         $comparableOriginalPhrase = 'Hello 321 Hi 643';
         $comparableExpectedOriginalPhrase = 'Привіт 321 Хай 643';
 
-        $translatedPhrase = $plainPhraseTranslatorDecorator->translate($originalPhrase);
+        $translatedPhrase = $plainPhraseTranslatorDecorator->translate($originalPhrase, false);
         $this->assertNull($translatedPhrase);
 
         $plainPhraseTranslatorDecorator->saveTranslate($originalPhrase, $expectedTranslatePhrase);
-        $translatedPhrase = $plainPhraseTranslatorDecorator->translate($originalPhrase);
+        $translatedPhrase = $plainPhraseTranslatorDecorator->translate($originalPhrase, false);
         $this->assertEquals($expectedTranslatePhrase, $translatedPhrase);
-        $translatedPhrase = $plainPhraseTranslatorDecorator->translate($comparableOriginalPhrase);
+        $translatedPhrase = $plainPhraseTranslatorDecorator->translate($comparableOriginalPhrase, false);
         $this->assertEquals($comparableExpectedOriginalPhrase, $translatedPhrase);
 
         $translatedPhrase = $plainPhraseTranslatorDecorator->translateAll([

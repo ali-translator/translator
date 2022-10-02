@@ -1,5 +1,7 @@
 <?php
 
+namespace ALI\Translator\Tests\unit\Sources;
+
 use ALI\Translator\Tests\components\Factories\LanguagesEnum;
 use ALI\Translator\Tests\components\Factories\SourceFactory;
 use ALI\Translator\Source\Sources\FileSources\CsvSource\CsvFileSource;
@@ -7,9 +9,6 @@ use ALI\Translator\Source\Sources\MySqlSource\MySqlSource;
 use ALI\Translator\Source\SourcesCollection;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Class
- */
 class SourcesCollectionTest extends TestCase
 {
     public function test()

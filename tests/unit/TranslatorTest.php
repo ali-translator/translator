@@ -1,12 +1,11 @@
 <?php
 
+namespace ALI\Translator\Tests\unit;
+
 use ALI\Translator\Tests\components\TranslatorTester;
 use ALI\Translator\Translator;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Class
- */
 class TranslatorTest extends TestCase
 {
     public function test()

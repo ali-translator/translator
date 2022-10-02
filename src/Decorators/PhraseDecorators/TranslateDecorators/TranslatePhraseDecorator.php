@@ -2,9 +2,6 @@
 
 namespace ALI\Translator\Decorators\PhraseDecorators\TranslateDecorators;
 
-/**
- * Interface
- */
 interface TranslatePhraseDecorator
 {
     /**

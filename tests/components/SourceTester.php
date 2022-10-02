@@ -6,9 +6,6 @@ use ALI\Translator\Source\Exceptions\SourceException;
 use ALI\Translator\Source\SourceInterface;
 use PHPUnit\Framework\TestCase;
 
-/**
- * SourceTester
- */
 class SourceTester
 {
     /**

@@ -16,39 +16,24 @@ use RuntimeException;
  */
 class Translator implements TranslatorInterface
 {
-    /**
-     * @var SourcesCollection
-     */
-    protected $sourceCollection;
+    protected SourcesCollection $sourceCollection;
 
     /**
      * @var callable[]
      */
-    protected $missingTranslationCallbacks = [];
+    protected array $missingTranslationCallbacks = [];
 
-    /**
-     * @param SourcesCollection $sourceCollection
-     */
     public function __construct(SourcesCollection $sourceCollection)
     {
         $this->sourceCollection = $sourceCollection;
     }
 
-    /**
-     * @return SourcesCollection
-     */
     public function getSourceCollection(): SourcesCollection
     {
         return $this->sourceCollection;
     }
 
-    /**
-     * @param string $originalLanguageAlias
-     * @param string $translationLanguageAlias
-     * @return SourceInterface
-     * @throws RuntimeException
-     */
-    public function getSource($originalLanguageAlias, $translationLanguageAlias = null): SourceInterface
+    public function getSource(string $originalLanguageAlias,string $translationLanguageAlias = null): SourceInterface
     {
         $source = $this->sourceCollection->getSource($originalLanguageAlias, $translationLanguageAlias);
         if (!$source) {
@@ -66,22 +51,12 @@ class Translator implements TranslatorInterface
         return $this->missingTranslationCallbacks;
     }
 
-    /**
-     * @param callable $missingTranslationCallback
-     */
-    public function addMissingTranslationCatchers(callable $missingTranslationCallback)
+    public function addMissingTranslationCatchers(callable $missingTranslationCallback): void
     {
         $this->missingTranslationCallbacks[] = $missingTranslationCallback;
     }
 
-    /**
-     * @param string $originalLanguageAlias
-     * @param string $translationLanguageAlias
-     * @param array $phrases
-     * @return TranslatePhraseCollection
-     * @throws \Exception
-     */
-    public function translateAll(string $originalLanguageAlias,string $translationLanguageAlias,array $phrases): TranslatePhraseCollection
+    public function translateAll(string $originalLanguageAlias, string $translationLanguageAlias, array $phrases): TranslatePhraseCollection
     {
         $translatePhrasePacket = new TranslatePhraseCollection($originalLanguageAlias, $translationLanguageAlias);
         if ($originalLanguageAlias === $translationLanguageAlias) {
@@ -103,7 +78,7 @@ class Translator implements TranslatorInterface
 
         foreach ($searchPhrases as $originalPhrase => $searchPhrase) {
             $translate = $translatesFromSource[$searchPhrase] ?? null;
-            if (!$translate) {
+            if (!$translate && $searchPhrase) {
                 foreach ($this->getMissingTranslationCatchers() as $missingTranslationCallbacks) {
                     if (is_callable($missingTranslationCallbacks)) {
                         $translate = $missingTranslationCallbacks($originalLanguageAlias, $searchPhrase, $this) ?: null;
@@ -120,21 +95,14 @@ class Translator implements TranslatorInterface
         return $translatePhrasePacket;
     }
 
-    /**
-     * @param string $originalLanguageAlias
-     * @param string $translationLanguageAlias
-     * @param string $phrase
-     * @param bool $withTranslationFallback
-     * @return string|null
-     * @throws \Exception
-     */
     public function translate(
         string $originalLanguageAlias,
         string $translationLanguageAlias,
-        string $phrase,
-        bool $withTranslationFallback = false
-    )
+        ?string $phrase,
+        bool $withTranslationFallback
+    ): ?string
     {
+        $phrase = $phrase ?: '';
         if ($originalLanguageAlias === $translationLanguageAlias) {
             return $phrase;
         }
@@ -144,19 +112,12 @@ class Translator implements TranslatorInterface
         return $translatePhraseCollection->getTranslate($phrase, $withTranslationFallback);
     }
 
-    /**
-     * @param string $originalLanguageAlias
-     * @param string $translationLanguageAlias
-     * @param string $original
-     * @param string $translate
-     * @throws SourceException
-     */
     public function saveTranslate(
         string $originalLanguageAlias,
         string $translationLanguageAlias,
         string $original,
         string $translate
-    )
+    ): void
     {
         $source = $this->getSource($originalLanguageAlias, $translationLanguageAlias);
         $source->saveTranslate(
@@ -166,17 +127,11 @@ class Translator implements TranslatorInterface
         );
     }
 
-    /**
-     * @param string $originalLanguageAlias
-     * @param string $original
-     * @param null|string $translationLanguageAlias
-     * @throws \Exception
-     */
     public function delete(
         string $originalLanguageAlias,
         string $original,
         string $translationLanguageAlias = null
-    )
+    ): void
     {
         $this->getSource($originalLanguageAlias, $translationLanguageAlias)->delete($original);
     }

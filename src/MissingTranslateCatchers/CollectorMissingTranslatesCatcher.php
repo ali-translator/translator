@@ -5,9 +5,6 @@ namespace ALI\Translator\MissingTranslateCatchers;
 use ALI\Translator\PhraseCollection\OriginalPhraseCollection;
 use ALI\Translator\TranslatorInterface;
 
-/**
- * Class
- */
 class CollectorMissingTranslatesCatcher
 {
     /**

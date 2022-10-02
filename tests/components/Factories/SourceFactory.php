@@ -5,11 +5,7 @@ namespace ALI\Translator\Tests\components\Factories;
 use ALI\Translator\Source\Sources\FileSources\CsvSource\CsvFileSource;
 use ALI\Translator\Source\Sources\MySqlSource\MySqlSource;
 use ALI\Translator\Source\SourceInterface;
-use PDO;
 
-/**
- * SourceFactory
- */
 class SourceFactory
 {
     const SOURCE_MYSQL = 'mysql';

@@ -2,9 +2,6 @@
 
 namespace ALI\Translator\Source;
 
-/**
- * Class
- */
 class SourcesCollection
 {
     const ALL_LANGUAGES = 'all';

@@ -9,9 +9,6 @@ use ALI\Translator\Source\Installers\SourceInstallerInterface;
 use ALI\Translator\Source\SourceInterface;
 use Exception;
 
-/**
- * FileSourceAbstract
- */
 abstract class FileSourceAbstract implements SourceInterface
 {
     /**

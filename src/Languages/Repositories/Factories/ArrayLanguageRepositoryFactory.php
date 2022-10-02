@@ -7,9 +7,6 @@ use ALI\Translator\Languages\LanguageConstructorInterface;
 use ALI\Translator\Languages\LanguageInterface;
 use ALI\Translator\Languages\Repositories\ArrayLanguageRepository;
 
-/**
- * Class
- */
 class ArrayLanguageRepositoryFactory
 {
     /**

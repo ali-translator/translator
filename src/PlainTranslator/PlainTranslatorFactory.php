@@ -6,17 +6,9 @@ use ALI\Translator\Source\SourceInterface;
 use ALI\Translator\Source\SourcesCollection;
 use ALI\Translator\Translator;
 
-/**
- * Class
- */
 class PlainTranslatorFactory
 {
-    /**
-     * @param SourceInterface $source
-     * @param $translationLanguageAlias
-     * @return PlainTranslator
-     */
-    public function createPlainTranslator(SourceInterface $source, $translationLanguageAlias): PlainTranslator
+    public function createPlainTranslator(SourceInterface $source, string $translationLanguageAlias): PlainTranslator
     {
         $sourceCollection = new SourcesCollection();
         $sourceCollection->addSource($source);

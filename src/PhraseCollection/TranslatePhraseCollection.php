@@ -5,9 +5,6 @@ namespace ALI\Translator\PhraseCollection;
 use ArrayIterator;
 use IteratorAggregate;
 
-/**
- * TranslatePhrasePacket
- */
 class TranslatePhraseCollection implements IteratorAggregate
 {
     /**
@@ -71,7 +68,7 @@ class TranslatePhraseCollection implements IteratorAggregate
      * @param bool $withTranslationFallback
      * @return string|null
      */
-    public function getTranslate(string $original, bool $withTranslationFallback = false)
+    public function getTranslate(string $original, bool $withTranslationFallback)
     {
         if (isset($this->originalsWithTranslate[$original])) {
             $translation = $this->originalsWithTranslate[$original];

@@ -4,9 +4,6 @@ namespace ALI\Translator\Source\Installers;
 
 use PDO;
 
-/**
- * MySqlSourceInstaller
- */
 class MySqlSourceInstaller implements SourceInstallerInterface
 {
     /**

@@ -7,10 +7,6 @@ use ALI\Translator\Languages\LanguageRepositoryInstallerInterface;
 use ALI\Translator\Languages\LanguageRepositoryInterface;
 use ALI\Translator\Languages\Repositories\Installers\NullLanguageRepositoryInstaller;
 
-/**
- * This repository may use, when your save your languages in config file,
- * and create object from by config data
- */
 class ArrayLanguageRepository implements LanguageRepositoryInterface
 {
     /**

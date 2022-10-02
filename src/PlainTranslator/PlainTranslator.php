@@ -3,7 +3,6 @@
 namespace ALI\Translator\PlainTranslator;
 
 use ALI\Translator\PhraseCollection\TranslatePhraseCollection;
-use ALI\Translator\Source\Exceptions\SourceException;
 use ALI\Translator\Source\SourceInterface;
 use ALI\Translator\TranslatorInterface;
 
@@ -14,31 +13,13 @@ use ALI\Translator\TranslatorInterface;
  */
 class PlainTranslator implements PlainTranslatorInterface
 {
-    /**
-     * @var string
-     */
-    protected $originalLanguageAlias;
+    protected string $originalLanguageAlias;
+    protected string $translationLanguageAlias;
+    protected TranslatorInterface $translator;
 
-    /**
-     * @var string
-     */
-    protected $translationLanguageAlias;
-
-    /**
-     * @var TranslatorInterface
-     */
-    protected $translator;
-
-    /**
-     * Translate constructor
-     *
-     * @param string $originalLanguageAlias
-     * @param string $translationLanguageAlias
-     * @param TranslatorInterface $translator
-     */
     public function __construct(
-        $originalLanguageAlias,
-        $translationLanguageAlias,
+        string $originalLanguageAlias,
+        string $translationLanguageAlias,
         TranslatorInterface $translator
     )
     {
@@ -47,25 +28,16 @@ class PlainTranslator implements PlainTranslatorInterface
         $this->translator = $translator;
     }
 
-    /**
-     * @return bool
-     */
     public function isCurrentLanguageOriginal(): bool
     {
         return $this->translationLanguageAlias === $this->originalLanguageAlias;
     }
 
-    /**
-     * @return string
-     */
     public function getTranslationLanguageAlias(): string
     {
         return $this->translationLanguageAlias;
     }
 
-    /**
-     * @return SourceInterface
-     */
     public function getSource(): SourceInterface
     {
         return $this->translator->getSource($this->originalLanguageAlias, $this->translationLanguageAlias);
@@ -74,57 +46,36 @@ class PlainTranslator implements PlainTranslatorInterface
     /**
      * @return callable[]
      */
-    public function getMissingTranslationCallbacks()
+    public function getMissingTranslationCallbacks(): array
     {
         return $this->translator->getMissingTranslationCatchers();
     }
 
-    /**
-     * @param callable $missingTranslationCallback
-     */
-    public function addMissingTranslationCallback(callable $missingTranslationCallback)
+    public function addMissingTranslationCallback(callable $missingTranslationCallback): void
     {
         $this->translator->addMissingTranslationCatchers($missingTranslationCallback);
     }
 
-    /**
-     * @param array $phrases
-     * @return TranslatePhraseCollection
-     */
-    public function translateAll($phrases): TranslatePhraseCollection
+    public function translateAll(array $phrases): TranslatePhraseCollection
     {
         return $this->translator->translateAll($this->originalLanguageAlias, $this->translationLanguageAlias, $phrases);
     }
 
-    /**
-     * Fast translate without buffers and processors
-     *
-     * @param string $phrase
-     * @param bool $withTranslationFallback
-     * @return string|null
-     */
-    public function translate($phrase, $withTranslationFallback = false)
+    public function translate(?string $phrase, bool $withTranslationFallback): ?string
     {
+        $phrase = $phrase ?: '';
+
         return $this->translator->translate($this->originalLanguageAlias, $this->translationLanguageAlias, $phrase, $withTranslationFallback);
     }
 
-    /**
-     * @param $original
-     * @param $translate
-     * @param string $translationLanguageAlias
-     */
-    public function saveTranslate(string $original,string $translate, $translationLanguageAlias = null)
+    public function saveTranslate(string $original,string $translate, string $translationLanguageAlias = null): void
     {
         $translationLanguageAlias = $translationLanguageAlias ?: $this->translationLanguageAlias;
 
         $this->translator->saveTranslate($this->originalLanguageAlias, $translationLanguageAlias, $original, $translate);
     }
 
-    /**
-     * Delete original and all translated phrases
-     * @param $original
-     */
-    public function delete(string $original)
+    public function delete(string $original): void
     {
         $this->translator->delete($this->originalLanguageAlias, $original, $this->translationLanguageAlias);
     }

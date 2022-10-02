@@ -2,9 +2,6 @@
 
 namespace ALI\Translator\Languages;
 
-/**
- * LanguageRepositoryInterface
- */
 interface LanguageRepositoryInterface
 {
     public function save(LanguageInterface $language, bool $isActive): bool;

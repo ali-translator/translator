@@ -4,9 +4,6 @@ namespace ALI\Translator\Decorators\PhraseDecorators;
 
 use ALI\Translator\Decorators\PhraseDecorators\OriginalDecorators\OriginalPhraseDecoratorInterface;
 
-/**
- * Class
- */
 class OriginalPhraseDecoratorManager implements OriginalPhraseDecoratorInterface
 {
     /**

@@ -10,9 +10,6 @@ use ALI\Translator\TranslatorInterface;
 use Exception;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Class
- */
 class TranslatorTester
 {
     /**
@@ -89,31 +86,31 @@ class TranslatorTester
         $phraseOriginal = 'Hello';
 
         // Without saved original
-        $phraseTranslate = $translator->translate('en', 'ua', $phraseOriginal);
+        $phraseTranslate = $translator->translate('en', 'ua', $phraseOriginal, false);
         $testCase->assertNull($phraseTranslate);
-        $phraseTranslate = $translator->translate('en', 'ru', $phraseOriginal);
+        $phraseTranslate = $translator->translate('en', 'ru', $phraseOriginal, false);
         $testCase->assertNull($phraseTranslate);
 
         // With saved original
         $translator->getSource('en')->saveOriginals([$phraseOriginal]);
-        $phraseTranslate = $translator->translate('en', 'ua', $phraseOriginal);
+        $phraseTranslate = $translator->translate('en', 'ua', $phraseOriginal, false);
         $testCase->assertNull($phraseTranslate);
-        $phraseTranslate = $translator->translate('en', 'ru', $phraseOriginal);
+        $phraseTranslate = $translator->translate('en', 'ru', $phraseOriginal, false);
         $testCase->assertNull($phraseTranslate);
 
         // With ua translate
         $translator->saveTranslate('en', 'ua', $phraseOriginal, 'Привіт');
-        $phraseTranslate = $translator->translate('en', 'ua', $phraseOriginal);
+        $phraseTranslate = $translator->translate('en', 'ua', $phraseOriginal, false);
         $testCase->assertEquals('Привіт', $phraseTranslate);
-        $phraseTranslate = $translator->translate('en', 'ru', $phraseOriginal);
+        $phraseTranslate = $translator->translate('en', 'ru', $phraseOriginal, false);
         $testCase->assertNull($phraseTranslate);
         $translator->delete('en', $phraseOriginal, 'ua');
 
         // With ru translate
         $translator->saveTranslate('en', 'ru', $phraseOriginal, 'Привет');
-        $phraseTranslate = $translator->translate('en', 'ua', $phraseOriginal);
+        $phraseTranslate = $translator->translate('en', 'ua', $phraseOriginal, false);
         $testCase->assertNull($phraseTranslate);
-        $phraseTranslate = $translator->translate('en', 'ru', $phraseOriginal);
+        $phraseTranslate = $translator->translate('en', 'ru', $phraseOriginal, false);
         $testCase->assertEquals('Привет', $phraseTranslate);
     }
 }

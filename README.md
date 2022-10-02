@@ -31,11 +31,11 @@ if($installer->isInstalled()){
 $plainTranslator = (new PlainTranslatorFactory())->createPlainTranslator($source, $translationLanguageAlias);
 
 $plainTranslator->saveTranslate('Hello','Привет');
-$plainTranslator->translate('Hello'); // -> 'Привет'
+$plainTranslator->translate('Hello', true); // -> 'Привет'
 $plainTranslator->translateAll(['Hello']); // -> ['Привет']
 
 // Try translate not exist phrase
-$plainTranslator->translate('Goodbye'); // -> null
+$plainTranslator->translate('Goodbye', false); // -> null
 $plainTranslator->translate('Goodbye', true); // With fallback -> 'Goodbye'
 
 $plainTranslator->delete('Hello');
@@ -69,12 +69,12 @@ $plainTranslator = new PlainTranslator('en', 'ru', $translator);
 /** @var \ALI\Translator\PlainTranslator\PlainTranslatorInterface $plainTranslator */
 
 // Simple parameter
-$translatedPhrase = $plainTranslator->translate('Осталось {number}');
+$translatedPhrase = $plainTranslator->translate('Осталось {number}', true);
 echo MessageFormatter::formatMessage('ru_RU', $translatedPhrase, ['number' => 25]);
 // -> 'Осталось 25'
 
 // Plural forms
-$translatedPhrase = $plainTranslator->translate('Осталось {placeLeft, plural, =0{# мест} one{# место} few{# места} other{# мест}}');
+$translatedPhrase = $plainTranslator->translate('Осталось {placeLeft, plural, =0{# мест} one{# место} few{# места} other{# мест}}', true);
 echo MessageFormatter::formatMessage('ru_RU', $translatedPhrase, [
     'placeLeft' => 1,
 ]);
@@ -129,7 +129,7 @@ $plainPhraseTranslatorDecorator = new PlainTranslator('en', 'ua', $phraseTransla
 
 $plainPhraseTranslatorDecorator->saveTranslate('Hello 123 Hi 000', 'Привіт 123 Хай 000');
 // and when translate text with another numbers, you get previous saved translation
-$plainPhraseTranslatorDecorator->translate('Hello 555 Hi 8676');
+$plainPhraseTranslatorDecorator->translate('Hello 555 Hi 8676', true);
 // -> 'Привіт 555 Хай 8676'
 ```
 
@@ -187,7 +187,6 @@ In packet exist docker-compose file, with environment for testing.
 ```bash
 docker-compose up -d
 docker-compose exec php bash
-# And on opened docker container:
-composer install
-./vendor/bin/phpunit
+docker-compose run php composer install
+docker-compose run php vendor/bin/phpunit
 ``` 

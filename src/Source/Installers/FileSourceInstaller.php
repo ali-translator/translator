@@ -5,9 +5,6 @@ namespace ALI\Translator\Source\Installers;
 use ALI\Translator\Source\Exceptions\CsvFileSource\UnsupportedLanguageAliasException;
 use ALI\Translator\Source\Sources\FileSources\FileSourceAbstract;
 
-/**
- * Class
- */
 class FileSourceInstaller implements SourceInstallerInterface
 {
     /**

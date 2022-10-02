@@ -16,7 +16,6 @@ use RuntimeException;
  * Language alias - allowed only word symbols and "-_"
  * Content in files - first original and after delimiter - translate.
  * Class FileSource
- * @package ALI\Translator\Sources
  */
 class CsvFileSource extends FileSourceAbstract
 {

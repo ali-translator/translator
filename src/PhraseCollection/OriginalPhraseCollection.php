@@ -7,9 +7,6 @@ use IteratorAggregate;
 use IteratorIterator;
 use Traversable;
 
-/**
- * OriginalPhrasePacket
- */
 class OriginalPhraseCollection implements IteratorAggregate
 {
     /**

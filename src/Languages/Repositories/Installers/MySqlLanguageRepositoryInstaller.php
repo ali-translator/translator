@@ -5,9 +5,6 @@ namespace ALI\Translator\Languages\Repositories\Installers;
 use ALI\Translator\Languages\LanguageRepositoryInstallerInterface;
 use PDO;
 
-/**
- * Class
- */
 class MySqlLanguageRepositoryInstaller implements LanguageRepositoryInstallerInterface
 {
     /**

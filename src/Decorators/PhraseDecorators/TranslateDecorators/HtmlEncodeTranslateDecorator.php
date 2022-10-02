@@ -2,9 +2,6 @@
 
 namespace ALI\Translator\Decorators\PhraseDecorators\TranslateDecorators;
 
-/**
- * Class
- */
 class HtmlEncodeTranslateDecorator implements TranslatePhraseDecorator
 {
     /**

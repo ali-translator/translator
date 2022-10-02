@@ -5,6 +5,7 @@ namespace ALI\Translator\Decorators;
 use ALI\Translator\Decorators\PhraseDecorators\OriginalPhraseDecoratorManager;
 use ALI\Translator\Decorators\PhraseDecorators\TranslatePhraseDecoratorManager;
 use ALI\Translator\PhraseCollection\TranslatePhraseCollection;
+use ALI\Translator\Source\SourceInterface;
 use ALI\Translator\TranslatorInterface;
 
 /**
@@ -12,26 +13,10 @@ use ALI\Translator\TranslatorInterface;
  */
 class PhraseTranslatorDecorator implements TranslatorInterface
 {
-    /**
-     * @var TranslatorInterface
-     */
-    protected $translator;
+    protected TranslatorInterface $translator;
+    protected OriginalPhraseDecoratorManager $originalDecoratorManager;
+    protected TranslatePhraseDecoratorManager $translateDecoratorManager;
 
-    /**
-     * @var OriginalPhraseDecoratorManager
-     */
-    protected $originalDecoratorManager;
-
-    /**
-     * @var TranslatePhraseDecoratorManager
-     */
-    protected $translateDecoratorManager;
-
-    /**
-     * @param TranslatorInterface $translator
-     * @param OriginalPhraseDecoratorManager $originalDecoratorManager
-     * @param TranslatePhraseDecoratorManager $translateDecoratorManager
-     */
     public function __construct(
         TranslatorInterface $translator,
         OriginalPhraseDecoratorManager $originalDecoratorManager = null,
@@ -53,7 +38,7 @@ class PhraseTranslatorDecorator implements TranslatorInterface
         $decoratedTranslatedPhrasePacket = new TranslatePhraseCollection($originalLanguageAlias, $translationLanguageAlias);
         foreach ($decoratedOriginalPhrases as $key => $originalDecoratedPhrase) {
             $originalPhrase = $phrases[$key];
-            $translatePhrase =$translatePhrasePacket->getTranslate($originalDecoratedPhrase);
+            $translatePhrase = $translatePhrasePacket->getTranslate($originalDecoratedPhrase, false);
             if ($translatePhrase) {
                 $translatePhrase = $this->translateDecoratorManager->decorate($originalPhrase, $translatePhrase);
             }
@@ -63,8 +48,9 @@ class PhraseTranslatorDecorator implements TranslatorInterface
         return $decoratedTranslatedPhrasePacket;
     }
 
-    public function translate(string $originalLanguageAlias, string $translationLanguageAlias, string $phrase, bool $withTranslationFallback = false)
+    public function translate(string $originalLanguageAlias, string $translationLanguageAlias, ?string $phrase, bool $withTranslationFallback = false): ?string
     {
+        $phrase = $phrase ?: '';
         $decoratedOriginalPhrase = $this->originalDecoratorManager->decorate($phrase);
         $translate = $this->translator->translate($originalLanguageAlias, $translationLanguageAlias, $decoratedOriginalPhrase, $withTranslationFallback);
         if ($translate) {
@@ -74,24 +60,24 @@ class PhraseTranslatorDecorator implements TranslatorInterface
         return $translate;
     }
 
-    public function saveTranslate(string $originalLanguageAlias,string $translationLanguageAlias,string $original,string $translate)
+    public function saveTranslate(string $originalLanguageAlias,string $translationLanguageAlias,string $original,string $translate): void
     {
         $original = $this->originalDecoratorManager->decorate($original);
         $this->translator->saveTranslate($originalLanguageAlias, $translationLanguageAlias, $original, $translate);
     }
 
-    public function delete(string $originalLanguageAlias, string $original, string $translationLanguageAlias = null)
+    public function delete(string $originalLanguageAlias, string $original, string $translationLanguageAlias = null): void
     {
         $original = $this->originalDecoratorManager->decorate($original);
         $this->translator->delete($originalLanguageAlias, $original, $translationLanguageAlias);
     }
 
-    public function getSource(string $originalLanguageAlias,string $translationLanguageAlias = null)
+    public function getSource(string $originalLanguageAlias,string $translationLanguageAlias = null): SourceInterface
     {
         return $this->translator->getSource($originalLanguageAlias, $translationLanguageAlias);
     }
 
-    public function addMissingTranslationCatchers(callable $missingTranslationCallback)
+    public function addMissingTranslationCatchers(callable $missingTranslationCallback): void
     {
         $this->translator->addMissingTranslationCatchers($missingTranslationCallback);
     }

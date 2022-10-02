@@ -1,6 +1,7 @@
 <?php
 
-use ALI\Translator\PhraseCollection\OriginalPhraseCollection;
+namespace ALI\Translator\Tests\unit\MissingTranslateCallbacks;
+
 use ALI\Translator\Tests\components\Factories\LanguagesEnum;
 use ALI\Translator\Tests\components\Factories\SourceFactory;
 use ALI\Translator\MissingTranslateCatchers\CollectorMissingTranslatesCatcher;
@@ -10,9 +11,6 @@ use ALI\Translator\Source\Exceptions\CsvFileSource\UnsupportedLanguageAliasExcep
 use ALI\Translator\PlainTranslator\PlainTranslatorFactory;
 use PHPUnit\Framework\TestCase;
 
-/**
- * Class
- */
 class CollectorTranslateCallbackTest extends TestCase
 {
     /**
@@ -29,12 +27,12 @@ class CollectorTranslateCallbackTest extends TestCase
             $callBack = new CollectorMissingTranslatesCatcher();
             $translator->addMissingTranslationCallback($callBack);
 
-            $translatePhrase = $translator->translate('Test');
+            $translatePhrase = $translator->translate('Test', false);
             $this->assertEquals('', $translatePhrase);
 
             // Add translate
             $source->saveTranslate($currentLanguageAlias, 'Cat', 'Кіт');
-            $translatePhrase = $translator->translate('Cat');
+            $translatePhrase = $translator->translate('Cat', false);
             $source->delete('Cat');
             $this->assertEquals('Кіт', $translatePhrase);
 

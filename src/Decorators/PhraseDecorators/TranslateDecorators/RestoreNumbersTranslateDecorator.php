@@ -2,10 +2,6 @@
 
 namespace ALI\Translator\Decorators\PhraseDecorators\TranslateDecorators;
 
-/**
- * Class ReplaceNumbersTranslateProcessor
- * @package ALI\Translator\TranslateProcessors
- */
 class RestoreNumbersTranslateDecorator implements TranslatePhraseDecorator
 {
     /**

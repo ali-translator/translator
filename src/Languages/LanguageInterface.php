@@ -2,9 +2,6 @@
 
 namespace ALI\Translator\Languages;
 
-/**
- * LanguageInterface Interface
- */
 interface LanguageInterface
 {
     /**
