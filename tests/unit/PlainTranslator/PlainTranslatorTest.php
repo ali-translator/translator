@@ -35,9 +35,9 @@ class PlainTranslatorTest extends TestCase
     {
         $translator = (new PlainTranslatorFactory())->createPlainTranslator($source, LanguagesEnum::TRANSLATION_LANGUAGE_ALIAS);
 
-        $this->assertEquals($translator->translate($originalPhrase, false), '');
+        $this->assertEquals('', $translator->translate($originalPhrase, false));
         $translator->saveTranslate($originalPhrase, $translatedPhrase);
-        $this->assertEquals($translator->translate($originalPhrase, false), $translatedPhrase);
+        $this->assertEquals($translatedPhrase, $translator->translate($originalPhrase, false));
         $translator->delete($originalPhrase);
     }
 

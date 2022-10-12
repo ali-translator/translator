@@ -13,32 +13,11 @@ use PDOStatement;
 
 class MySqlSource implements SourceInterface
 {
-    /**
-     * @var PDO
-     */
-    protected $pdo;
+    protected PDO $pdo;
+    private string $originalLanguageAlias;
+    protected string $originalTableName;
+    protected string $translateTableName;
 
-    /**
-     * @var string
-     */
-    private $originalLanguageAlias;
-
-    /**
-     * @var string
-     */
-    protected $originalTableName;
-
-    /**
-     * @var string
-     */
-    protected $translateTableName;
-
-    /**
-     * @param PDO $pdo
-     * @param string $originalLanguageAlias
-     * @param string $originalTableName
-     * @param string $translateTableName
-     */
     public function __construct(
         PDO $pdo,
         string $originalLanguageAlias,
@@ -52,17 +31,11 @@ class MySqlSource implements SourceInterface
         $this->translateTableName = $translateTableName;
     }
 
-    /**
-     * @return bool
-     */
     public function isSensitiveForRequestsCount(): bool
     {
         return true;
     }
 
-    /**
-     * @return string
-     */
     public function getOriginalLanguageAlias(): string
     {
         return $this->originalLanguageAlias;
@@ -81,7 +54,7 @@ class MySqlSource implements SourceInterface
     }
 
     /**
-     * @param array $phrases
+     * @param string[] $phrases
      * @param string $languageAlias
      * @return string[]
      */
@@ -125,10 +98,8 @@ class MySqlSource implements SourceInterface
 
     /**
      * Generate keys for find original phrase in database
-     * @param string $phrase
-     * @return array
      */
-    protected function createOriginalQueryParams($phrase)
+    protected function createOriginalQueryParams(string $phrase): array
     {
         $contentIndex = mb_substr($phrase, 0, 64, 'utf8');
 
@@ -139,13 +110,7 @@ class MySqlSource implements SourceInterface
         ];
     }
 
-    /**
-     * @param string $languageAlias
-     * @param string $original
-     * @param string $translate
-     * @throws LanguageNotExistsException
-     */
-    public function saveTranslate(string $languageAlias, string $original, string $translate)
+    public function saveTranslate(string $languageAlias, string $original, string $translate): void
     {
         $originalId = $this->getOriginalId($original);
         if (!$originalId) {
@@ -155,30 +120,21 @@ class MySqlSource implements SourceInterface
         $this->saveTranslateByOriginalId($languageAlias, $originalId, $translate);
     }
 
-    /**
-     * @param string $original
-     * @return mixed
-     */
-    public function getOriginalId($original)
+    public function getOriginalId(string $original): int
     {
         $statement = $this->pdo->prepare('
-                SELECT id FROM `' . $this->originalTableName . '` WHERE content_index=:contentIndex AND content=:content AND language_alias=:originalLanguageAlias
+                SELECT id FROM `' . $this->originalTableName . '` WHERE content_index=:contentIndex AND content LIKE :content AND language_alias=:originalLanguageAlias
             ');
         $queryParams = $this->createOriginalQueryParams($original);
         foreach ($queryParams as $queryKey => $queryParam) {
             $statement->bindValue($queryKey, $queryParam);
         }
         $statement->execute();
-        $originalId = $statement->fetch(PDO::FETCH_COLUMN);
 
-        return $originalId;
+        return (int)$statement->fetch(PDO::FETCH_COLUMN);
     }
 
-    /**
-     * @param string $original
-     * @return string
-     */
-    public function insertOriginal($original)
+    protected function insertOriginal(string $original): int
     {
         $statement = $this->pdo->prepare(
             'INSERT INTO `' . $this->originalTableName . '` (`content_index`, `content`, `language_alias`) VALUES (:contentIndex, :content, :originalLanguageAlias)'
@@ -191,7 +147,7 @@ class MySqlSource implements SourceInterface
 
         $statement->execute();
 
-        return $this->pdo->lastInsertId();
+        return (int)$this->pdo->lastInsertId();
     }
 
     /**
@@ -215,12 +171,11 @@ class MySqlSource implements SourceInterface
 
     /**
      * Delete original and all translated phrases
-     * @param string $original
      */
-    public function delete(string $original)
+    public function delete(string $original): void
     {
         $statement = $this->pdo->prepare('
-                DELETE FROM `' . $this->originalTableName . '` WHERE content_index=:contentIndex AND content=:content AND language_alias=:originalLanguageAlias
+                DELETE FROM `' . $this->originalTableName . '` WHERE content_index=:contentIndex AND content LIKE :content AND language_alias=:originalLanguageAlias
             ');
         $queryParams = $this->createOriginalQueryParams($original);
         foreach ($queryParams as $queryKey => $queryParam) {
@@ -233,7 +188,7 @@ class MySqlSource implements SourceInterface
      * @param string[] $phrases
      * @throws Exception
      */
-    public function saveOriginals(array $phrases)
+    public function saveOriginals(array $phrases): void
     {
         if (!$phrases) {
             return;
@@ -430,10 +385,7 @@ class MySqlSource implements SourceInterface
         return new MySqlSourceInstaller($this->pdo, $this->originalTableName, $this->translateTableName);
     }
 
-    /**
-     * @inheritDoc
-     */
-    public function getOriginalsWithoutTranslate(string $translationLanguageAlias, $offset = 0, $limit = null): OriginalPhraseCollection
+    public function getOriginalsWithoutTranslate(string $translationLanguageAlias, int $offset = 0, int $limit = null): OriginalPhraseCollection
     {
         $originalsWithoutTranslationCollection = new OriginalPhraseCollection($this->originalLanguageAlias);
 

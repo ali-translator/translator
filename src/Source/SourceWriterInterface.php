@@ -12,16 +12,16 @@ interface SourceWriterInterface
      * @param string $translate
      * @throws SourceException
      */
-    public function saveTranslate(string $languageAlias, string $original, string $translate);
+    public function saveTranslate(string $languageAlias, string $original, string $translate): void;
 
     /**
      * @param string[] $phrases
      */
-    public function saveOriginals(array $phrases);
+    public function saveOriginals(array $phrases): void;
 
     /**
      * Delete original and all translated phrases
      * @param string $original
      */
-    public function delete(string $original);
+    public function delete(string $original): void;
 }

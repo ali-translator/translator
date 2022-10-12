@@ -2,17 +2,11 @@
 
 namespace ALI\Translator\Tests\components;
 
-use ALI\Translator\Source\Exceptions\SourceException;
 use ALI\Translator\Source\SourceInterface;
 use PHPUnit\Framework\TestCase;
 
 class SourceTester
 {
-    /**
-     * @param SourceInterface $source
-     * @param TestCase $testCase
-     * @throws SourceException
-     */
     public function testSource(SourceInterface $source, TestCase $testCase)
     {
         $languageForTranslateAlias = 'ua';
@@ -20,10 +14,30 @@ class SourceTester
         $originalPhrase = 'Hello';
         $translatePhrase = 'Привіт';
 
+        $this->testOriginalsWithEndSpaces($source, $testCase);
         $this->testSourceAddingNewTranslates($source, $testCase, $languageForTranslateAlias, $originalPhrase, $translatePhrase);
         $this->testSourceRemovingTranslate($source, $testCase, $originalPhrase, $languageForTranslateAlias);
         $this->testSourceAddingOriginals($source, $testCase);
         $this->testLongTexts($source, $testCase, $languageForTranslateAlias);
+    }
+
+    private function testOriginalsWithEndSpaces(SourceInterface $source, TestCase $testCase)
+    {
+        $firstOriginalPhrase = 'test';
+        $secondOriginalPhrase = 'test ';
+
+        $source->saveOriginals([$firstOriginalPhrase]);
+        $source->saveOriginals([$secondOriginalPhrase]);
+
+        $existOriginals = $source->getExistOriginals([$firstOriginalPhrase, $secondOriginalPhrase]);
+        $testCase->assertEquals([$firstOriginalPhrase,$secondOriginalPhrase], $existOriginals);
+
+        $originalsIds = $source->getOriginalsIds([$firstOriginalPhrase, $secondOriginalPhrase]);
+        $testCase->assertCount(2, $originalsIds);
+
+        $source->delete($firstOriginalPhrase);
+        $originalsIds = $source->getOriginalsIds([$firstOriginalPhrase, $secondOriginalPhrase]);
+        $testCase->assertCount(1, $originalsIds);
     }
 
     private function testLongTexts(SourceInterface $source, TestCase $testCase, $languageForTranslateAlias)
@@ -58,14 +72,7 @@ class SourceTester
         $testCase->assertEquals($translationForTextForSearching, $translation);
     }
 
-    /**
-     * @param SourceInterface $source
-     * @param TestCase $testCase
-     * @param $originalPhrase
-     * @param string $languageForTranslateAlias
-     * @throws SourceException
-     */
-    private function testSourceRemovingTranslate(SourceInterface $source, TestCase $testCase, $originalPhrase, $languageForTranslateAlias)
+    private function testSourceRemovingTranslate(SourceInterface $source, TestCase $testCase, $originalPhrase, string $languageForTranslateAlias)
     {
         $source->delete($originalPhrase);
         $translatePhraseFromSource = $source->getTranslate($originalPhrase, $languageForTranslateAlias);
@@ -73,15 +80,7 @@ class SourceTester
         $testCase->assertEquals('', $translatePhraseFromSource);
     }
 
-    /**
-     * @param SourceInterface $source
-     * @param TestCase $testCase
-     * @param string $languageForTranslateAlias
-     * @param $originalPhrase
-     * @param $translatePhrase
-     * @throws SourceException
-     */
-    private function testSourceAddingNewTranslates(SourceInterface $source, TestCase $testCase, $languageForTranslateAlias, $originalPhrase, $translatePhrase)
+    private function testSourceAddingNewTranslates(SourceInterface $source, TestCase $testCase, string $languageForTranslateAlias, string $originalPhrase, string $translatePhrase)
     {
         $source->saveTranslate($languageForTranslateAlias, $originalPhrase, $translatePhrase);
         $translatePhraseFromSource = $source->getTranslate($originalPhrase, $languageForTranslateAlias);
@@ -89,10 +88,6 @@ class SourceTester
         $testCase->assertEquals($translatePhrase, $translatePhraseFromSource);
     }
 
-    /**
-     * @param SourceInterface $source
-     * @param TestCase $testCase
-     */
     private function testSourceAddingOriginals(SourceInterface $source, TestCase $testCase)
     {
         $originals = [
@@ -102,7 +97,7 @@ class SourceTester
         ];
         $source->saveOriginals($originals);
 
-        // All originals must be exist
+        // All originals must be existed
         $existOriginals = $source->getExistOriginals($originals);
         $testCase->assertEquals($originals, $existOriginals);
 

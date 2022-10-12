@@ -66,7 +66,7 @@ class MySqlSourceInstaller implements SourceInstallerInterface
   id INT(11) UNSIGNED NOT NULL AUTO_INCREMENT,
   language_alias CHAR(2) NOT NULL,
   content_index VARCHAR(64) NOT NULL COMMENT \'System column for indexation\',
-  content TEXT NOT NULL,
+  content MEDIUMTEXT NOT NULL,
   PRIMARY KEY (id),
   INDEX indexContentIndex (content_index)
 )
@@ -84,7 +84,7 @@ class MySqlSourceInstaller implements SourceInstallerInterface
         $sqlCommand = 'CREATE TABLE ' . $this->translateTableName . ' (
   original_id INT(11) UNSIGNED    NOT NULL,
   language_alias VARCHAR(4) NOT NULL,
-  content     TEXT                NOT NULL,
+  content MEDIUMTEXT NOT NULL,
   PRIMARY KEY (original_id, language_alias),
   INDEX IDX_ali_translate_original_id (original_id),
   CONSTRAINT FK_ali_translate_ali_original_id FOREIGN KEY (original_id)

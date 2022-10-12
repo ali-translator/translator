@@ -45,15 +45,7 @@ class CsvFileSource extends FileSourceAbstract
         $this->filesExtension = $filesExtension;
     }
 
-    /**
-     * @param string $phrase
-     * @param string $languageAliasAlias
-     * @return null|string
-     * @throws FileReadPermissionsException
-     * @throws DirectoryNotFoundException
-     * @throws UnsupportedLanguageAliasException
-     */
-    public function getTranslate(string $phrase, string $languageAliasAlias)
+    public function getTranslate(string $phrase, string $languageAliasAlias): ?string
     {
         $this->preloadTranslates($languageAliasAlias);
 
@@ -65,13 +57,11 @@ class CsvFileSource extends FileSourceAbstract
     }
 
     /**
-     * @param $languageAlias
-     * @param bool $forceLoading
      * @throws DirectoryNotFoundException
      * @throws FileReadPermissionsException
      * @throws UnsupportedLanguageAliasException
      */
-    protected function preloadTranslates($languageAlias, $forceLoading = false)
+    protected function preloadTranslates(string $languageAlias,bool $forceLoading = false)
     {
         if (!isset($this->allTranslates[$languageAlias]) || $forceLoading) {
             $this->allTranslates[$languageAlias] = $this->parseLanguageFile($languageAlias);
@@ -79,17 +69,15 @@ class CsvFileSource extends FileSourceAbstract
     }
 
     /**
-     * @param string $languageAlias
-     * @return array
      * @throws FileReadPermissionsException
      * @throws DirectoryNotFoundException
      * @throws UnsupportedLanguageAliasException
      */
-    protected function parseLanguageFile($languageAlias)
+    protected function parseLanguageFile(string $languageAlias): array
     {
         $translates = [];
         foreach ($this->iterateTranslationFileData($languageAlias) as $languageFileData) {
-            $translates[$languageFileData[0]] = isset($languageFileData[1]) ? $languageFileData[1] : '';
+            $translates[$languageFileData[0]] = $languageFileData[1] ?? '';
         }
 
         return $translates;
@@ -98,7 +86,7 @@ class CsvFileSource extends FileSourceAbstract
     const INDEXED_BY_ID = 'id';
     const INDEXED_BY_ORIGINAL_CONTENT = 'original';
 
-    public function parseOriginalsLanguageRowsIds($indexedBy = self::INDEXED_BY_ID)
+    public function parseOriginalsLanguageRowsIds(string $indexedBy = self::INDEXED_BY_ID): array
     {
         $translates = [];
         foreach ($this->iterateTranslationFileData($this->originalLanguageAlias) as $languageFileData) {
@@ -113,7 +101,6 @@ class CsvFileSource extends FileSourceAbstract
                     break;
                 default:
                     throw new RuntimeException('Undefined "indexBy" type');
-                    break;
             }
             $translates[$key] = $value;
         }
@@ -122,10 +109,9 @@ class CsvFileSource extends FileSourceAbstract
     }
 
     /**
-     * @param string $languageAlias
      * @throws UnsupportedLanguageAliasException
      */
-    protected function saveLanguageFile($languageAlias)
+    protected function saveLanguageFile(string $languageAlias): void
     {
         $translatesData = $this->allTranslates[$languageAlias];
         $filePath = $this->getLanguageFilePath($languageAlias);
@@ -148,7 +134,7 @@ class CsvFileSource extends FileSourceAbstract
      * @throws FileReadPermissionsException
      * @throws UnsupportedLanguageAliasException
      */
-    public function saveTranslate(string $languageAlias, string $original, string $translate)
+    public function saveTranslate(string $languageAlias, string $original, string $translate): void
     {
         $this->saveOriginals([$original]);
 
@@ -168,7 +154,7 @@ class CsvFileSource extends FileSourceAbstract
      * @throws FileReadPermissionsException
      * @throws UnsupportedLanguageAliasException
      */
-    public function delete(string $original)
+    public function delete(string $original): void
     {
         $dataFiles = glob($this->getDirectoryPath() . DIRECTORY_SEPARATOR . '*.' . $this->filesExtension);
         foreach ($dataFiles as $file) {
@@ -188,7 +174,7 @@ class CsvFileSource extends FileSourceAbstract
      * @throws FileReadPermissionsException
      * @throws UnsupportedLanguageAliasException
      */
-    public function saveOriginals(array $phrases)
+    public function saveOriginals(array $phrases): void
     {
         $phrases = array_diff($phrases, $this->getExistOriginals($phrases));
 
@@ -265,13 +251,13 @@ class CsvFileSource extends FileSourceAbstract
     /**
      * @param string $translationLanguageAlias
      * @param int $offset
-     * @param null $limit
+     * @param int|null $limit
      * @return OriginalPhraseCollection
      * @throws DirectoryNotFoundException
      * @throws FileReadPermissionsException
      * @throws UnsupportedLanguageAliasException
      */
-    public function getOriginalsWithoutTranslate(string $translationLanguageAlias, $offset = 0, $limit = null): OriginalPhraseCollection
+    public function getOriginalsWithoutTranslate(string $translationLanguageAlias, int $offset = 0, int $limit = null): OriginalPhraseCollection
     {
         $this->preloadTranslates($translationLanguageAlias);
 

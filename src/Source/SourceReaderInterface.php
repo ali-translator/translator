@@ -13,7 +13,7 @@ interface SourceReaderInterface
      * @return null|string
      * @throws SourceException
      */
-    public function getTranslate(string $phrase, string $languageAliasAlias);
+    public function getTranslate(string $phrase, string $languageAliasAlias): ?string;
 
     /**
      * Get an array with original phrases as a key
@@ -33,8 +33,8 @@ interface SourceReaderInterface
     /**
      * @param string $translationLanguageAlias
      * @param int $offset
-     * @param null|int $limit
+     * @param int|null $limit
      * @return OriginalPhraseCollection
      */
-    public function getOriginalsWithoutTranslate(string $translationLanguageAlias, $offset = 0, $limit = null): OriginalPhraseCollection;
+    public function getOriginalsWithoutTranslate(string $translationLanguageAlias, int $offset = 0, int $limit = null): OriginalPhraseCollection;
 }
