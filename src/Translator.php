@@ -61,6 +61,9 @@ class Translator implements TranslatorInterface
         $translatePhrasePacket = new TranslatePhraseCollection($originalLanguageAlias, $translationLanguageAlias);
         if ($originalLanguageAlias === $translationLanguageAlias) {
             foreach ($phrases as $phrase) {
+                if ($phrase === null) {
+                    continue;
+                }
                 $translatePhrasePacket->addTranslate($phrase, null);
             }
 
@@ -77,6 +80,9 @@ class Translator implements TranslatorInterface
         );
 
         foreach ($searchPhrases as $originalPhrase => $searchPhrase) {
+            if ($originalPhrase === null) {
+                continue;
+            }
             $translate = $translatesFromSource[$searchPhrase] ?? null;
             if (!$translate && $searchPhrase) {
                 foreach ($this->getMissingTranslationCatchers() as $missingTranslationCallbacks) {
