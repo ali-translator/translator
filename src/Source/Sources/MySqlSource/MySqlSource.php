@@ -112,12 +112,16 @@ class MySqlSource implements SourceInterface
 
     public function saveTranslate(string $languageAlias, string $original, string $translate): void
     {
+        $this->pdo->exec('START TRANSACTION;');
+
         $originalId = $this->getOriginalId($original);
         if (!$originalId) {
             $originalId = $this->insertOriginal($original);
         }
 
         $this->saveTranslateByOriginalId($languageAlias, $originalId, $translate);
+
+        $this->pdo->exec('COMMIT;');
     }
 
     public function getOriginalId(string $original): int

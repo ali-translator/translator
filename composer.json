@@ -25,7 +25,7 @@
         "source": "https://github.com/ali-translator/translator"
     },
     "require": {
-        "php": ">=7.0"
+        "php": ">=7.4"
     },
     "autoload": {
         "psr-4": {
@@ -40,7 +40,6 @@
     "require-dev": {
         "symfony/var-dumper": "^5.0",
         "ext-pdo": "*",
-        "php": ">=7.3.0",
         "phpunit/phpunit": "^9.0"
     },
     "suggest": {
