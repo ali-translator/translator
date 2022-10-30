@@ -112,23 +112,32 @@ class MySqlSource implements SourceInterface
 
     public function saveTranslate(string $languageAlias, string $original, string $translate): void
     {
-        $this->pdo->exec('START TRANSACTION;');
+        try {
+            $this->pdo->beginTransaction();
 
-        $originalId = $this->getOriginalId($original);
-        if (!$originalId) {
-            $originalId = $this->insertOriginal($original);
+            $originalId = $this->getOriginalId($original, true);
+            if (!$originalId) {
+                $originalId = $this->insertOriginal($original);
+            }
+
+            $this->saveTranslateByOriginalId($languageAlias, $originalId, $translate);
+
+            $this->pdo->commit();
+        } catch (Exception $exception) {
+            $this->pdo->rollBack();
+            throw $exception;
         }
-
-        $this->saveTranslateByOriginalId($languageAlias, $originalId, $translate);
-
-        $this->pdo->exec('COMMIT;');
     }
 
-    public function getOriginalId(string $original): int
+    public function getOriginalId(
+        string $original,
+               $withShareLock = false
+    ): int
     {
         $statement = $this->pdo->prepare('
-                SELECT id FROM `' . $this->originalTableName . '` WHERE content_index=:contentIndex AND content LIKE :content AND language_alias=:originalLanguageAlias
-            ');
+                SELECT id FROM `' . $this->originalTableName . '` WHERE content_index=:contentIndex AND content LIKE :content AND language_alias=:originalLanguageAlias'
+            . ($withShareLock ? ' LOCK IN SHARE MODE' : '') . '
+            '); // "LOCK IN SHARE MODE" suitable for MySql and MariDB. "LOCK IN SHARE" - only for new MySql
         $queryParams = $this->createOriginalQueryParams($original);
         foreach ($queryParams as $queryKey => $queryParam) {
             $statement->bindValue($queryKey, $queryParam);
