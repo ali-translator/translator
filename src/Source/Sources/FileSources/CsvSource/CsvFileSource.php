@@ -8,6 +8,7 @@ use ALI\Translator\Source\Exceptions\CsvFileSource\FileNotWritableException;
 use ALI\Translator\Source\Exceptions\CsvFileSource\FileReadPermissionsException;
 use ALI\Translator\Source\Exceptions\CsvFileSource\UnsupportedLanguageAliasException;
 use ALI\Translator\Source\Sources\FileSources\FileSourceAbstract;
+use Generator;
 use RuntimeException;
 
 /**
@@ -21,14 +22,13 @@ class CsvFileSource extends FileSourceAbstract
 {
     /**
      * CSV delimiter - only one symbol
-     * @var string
      */
-    protected $delimiter;
+    protected string $delimiter;
 
     /**
      * @var string[][]
      */
-    protected $allTranslates = [];
+    protected array $allTranslates = [];
 
     /**
      * FileSource constructor.
@@ -37,7 +37,7 @@ class CsvFileSource extends FileSourceAbstract
      * @param string $delimiter - CSV delimiter may be only one symbol
      * @param string $filesExtension
      */
-    public function __construct($directoryPath, $originalLanguageAlias, $delimiter = ',', $filesExtension = 'csv')
+    public function __construct(string $directoryPath, string $originalLanguageAlias, string $delimiter = ',', string $filesExtension = 'csv')
     {
         $this->directoryPath = rtrim($directoryPath, '/\\');
         $this->originalLanguageAlias = $originalLanguageAlias;
@@ -45,12 +45,12 @@ class CsvFileSource extends FileSourceAbstract
         $this->filesExtension = $filesExtension;
     }
 
-    public function getTranslate(string $phrase, string $languageAliasAlias): ?string
+    public function getTranslate(string $phrase, string $languageAlias): ?string
     {
-        $this->preloadTranslates($languageAliasAlias);
+        $this->preloadTranslates($languageAlias);
 
-        if (!empty($this->allTranslates[$languageAliasAlias][$phrase])) {
-            return $this->allTranslates[$languageAliasAlias][$phrase];
+        if (!empty($this->allTranslates[$languageAlias][$phrase])) {
+            return $this->allTranslates[$languageAlias][$phrase];
         }
 
         return null;
@@ -279,9 +279,25 @@ class CsvFileSource extends FileSourceAbstract
         return $originalsWithoutTranslationCollection;
     }
 
+    public function getAllOriginalTranslates(string $phrase, ?array $languagesAliases = null): array
+    {
+        $translations = [];
+
+        $languagesAliases = $languagesAliases ?: $this->getExistedTranslationLanguages();
+        foreach ($languagesAliases as $languagesAlias) {
+            $this->preloadTranslates($languagesAlias);
+
+            if (!empty($this->allTranslates[$languagesAlias][$phrase])) {
+                $translations[$languagesAlias] = $this->allTranslates[$languagesAlias][$phrase];
+            }
+        }
+
+        return $translations;
+    }
+
     /**
      * @param $languageAlias
-     * @return \Generator
+     * @return Generator|array
      */
     protected function iterateTranslationFileData($languageAlias)
     {

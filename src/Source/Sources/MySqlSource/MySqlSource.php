@@ -43,12 +43,12 @@ class MySqlSource implements SourceInterface
 
     /**
      * @param string $phrase
-     * @param string $languageAliasAlias
+     * @param string $languageAlias
      * @return string|null
      */
-    public function getTranslate(string $phrase, string $languageAliasAlias): ?string
+    public function getTranslate(string $phrase, string $languageAlias): ?string
     {
-        $translates = $this->getTranslates([$phrase], $languageAliasAlias);
+        $translates = $this->getTranslates([$phrase], $languageAlias);
 
         return $translates[$phrase] ?? null;
     }
@@ -67,7 +67,7 @@ class MySqlSource implements SourceInterface
             return array_combine($phrases, $phrases);
         }
 
-        list($whereQuery, $valuesForWhereBinding) = $this->prepareParamsForQuery($phrases, 'select');
+        [$whereQuery, $valuesForWhereBinding] = $this->prepareParamsForQuery($phrases, 'select');
 
         $dataQuery = $this->pdo->prepare(
             'SELECT o.`id`, o.`content_index`, o.`content` as `original`, t.`content` as `translate`
@@ -131,7 +131,7 @@ class MySqlSource implements SourceInterface
 
     public function getOriginalId(
         string $original,
-               $withShareLock = false
+        bool $withShareLock = false
     ): int
     {
         $statement = $this->pdo->prepare('
@@ -211,7 +211,7 @@ class MySqlSource implements SourceInterface
             return;
         }
 
-        list($valuesQuery, $valuesForWhereBinding) = $this->prepareParamsForQuery($phrasesForInsert, 'insert');
+        [$valuesQuery, $valuesForWhereBinding] = $this->prepareParamsForQuery($phrasesForInsert, 'insert');
 
         $statement = $this->pdo->prepare(
             'INSERT INTO `' . $this->originalTableName . '`
@@ -236,7 +236,7 @@ class MySqlSource implements SourceInterface
             return [];
         }
 
-        list($whereQuery, $valuesForWhereBinding) = $this->prepareParamsForQuery($phrases, 'select');
+        [$whereQuery, $valuesForWhereBinding] = $this->prepareParamsForQuery($phrases, 'select');
 
         $dataQuery = $this->pdo->prepare(
             'SELECT o.`id`, o.`content_index`, o.`content` as `original`
@@ -356,7 +356,6 @@ class MySqlSource implements SourceInterface
                     break;
                 default:
                     throw new Exception('Invalid type');
-                    break;
             }
         }
 
@@ -428,5 +427,36 @@ class MySqlSource implements SourceInterface
         }
 
         return $originalsWithoutTranslationCollection;
+    }
+
+    public function getAllOriginalTranslates(string $phrase, ?array $languagesAliases = null): array
+    {
+        $originalId = $this->getOriginalId($phrase) ?? null;
+        if (!$originalId) {
+            return [];
+        }
+
+        $queryParameters = [];
+
+        $query = 'SELECT `content`, `language_alias`
+                FROM `' . $this->translateTableName . '`
+            WHERE original_id=?';
+        $queryParameters[] = $originalId;
+
+        if ($languagesAliases) {
+            $in = str_repeat('?,', count($languagesAliases) - 1) . '?';
+            $query .= ' AND `language_alias` IN (' . $in . ')';
+            $queryParameters = array_merge($queryParameters, $languagesAliases);
+        }
+
+        $dataQuery = $this->pdo->prepare($query);
+        $dataQuery->execute($queryParameters);
+
+        $translates = [];
+        while ($translateRow = $dataQuery->fetch(PDO::FETCH_ASSOC)) {
+            $translates[$translateRow['language_alias']] = $translateRow['content'];
+        }
+
+        return $translates;
     }
 }

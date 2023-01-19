@@ -116,7 +116,7 @@ class SourceTest extends TestCase
             $existOriginals = $secondSource->getExistOriginals([$phraseOriginal]);
             $this->assertEquals([], $existOriginals);
 
-            // With saved translate on first source
+            // With the translation saved in the first source
             $firstSource->saveTranslate('ua', $phraseOriginal, 'Привіт');
             $phraseTranslate = $firstSource->getTranslate($phraseOriginal, 'ua');
             $this->assertEquals('Привіт', $phraseTranslate);
@@ -128,7 +128,7 @@ class SourceTest extends TestCase
             $existOriginals = $secondSource->getExistOriginals([$phraseOriginal]);
             $this->assertEquals([], $existOriginals);
 
-            // With saved translate on second source
+            // With the translation saved in the second source
             $secondSource->saveTranslate('ua', $phraseOriginal, 'Привіт1');
             $phraseTranslate = $secondSource->getTranslate($phraseOriginal, 'ua');
             $this->assertEquals('Привіт1', $phraseTranslate);
@@ -140,7 +140,7 @@ class SourceTest extends TestCase
             $existOriginals = $firstSource->getExistOriginals([$phraseOriginal]);
             $this->assertEquals([$phraseOriginal], $existOriginals);
 
-            // Delete on first source
+            // Delete in the first source
             $firstSource->delete($phraseOriginal);
             $phraseTranslate = $firstSource->getTranslate($phraseOriginal, 'ua');
             $this->assertNull($phraseTranslate);
@@ -152,7 +152,7 @@ class SourceTest extends TestCase
             $existOriginals = $secondSource->getExistOriginals([$phraseOriginal]);
             $this->assertEquals([$phraseOriginal], $existOriginals);
 
-            // Delete on second source
+            // Delete in the second source
             $secondSource->delete($phraseOriginal);
             $phraseTranslate = $secondSource->getTranslate($phraseOriginal, 'ua');
             $this->assertNull($phraseTranslate);
@@ -236,6 +236,41 @@ class SourceTest extends TestCase
 
             $originalsIds = $source->getOriginalsIds($originals);
             static::assertEmpty($originalsIds);
+        }
+    }
+
+    public function testGettingAllTranslationOfOriginal()
+    {
+        $original = 'some original';
+        $translations = [
+            "en" => "translate en",
+            "uk" => "translate uk",
+        ];
+
+        $sourceFactory = new SourceFactory();
+
+        foreach ($sourceFactory::$allSourcesTypes as $sourceType) {
+            $source = $sourceFactory->generateSource($sourceType, 'en', true);
+
+            $translationsFromSource = $source->getAllOriginalTranslates($original);
+            static::assertEmpty($translationsFromSource);
+
+            foreach ($translations as $languageAlias => $translation) {
+                $source->saveTranslate($languageAlias, $original, $translation);
+            }
+
+            $translationsFromSource = $source->getAllOriginalTranslates($original);
+            static::assertEquals($translations, $translationsFromSource);
+
+            $translationsFromSource = $source->getAllOriginalTranslates($original, ['en']);
+            static::assertEquals([
+                'en' => $translations['en']
+            ], $translationsFromSource);
+
+            $translationsFromSource = $source->getAllOriginalTranslates($original, ['uk']);
+            static::assertEquals([
+                'uk' => $translations['uk']
+            ], $translationsFromSource);
         }
     }
 }

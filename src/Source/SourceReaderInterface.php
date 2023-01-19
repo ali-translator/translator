@@ -9,11 +9,11 @@ interface SourceReaderInterface
 {
     /**
      * @param string $phrase
-     * @param string $languageAliasAlias
+     * @param string $languageAlias
      * @return null|string
      * @throws SourceException
      */
-    public function getTranslate(string $phrase, string $languageAliasAlias): ?string;
+    public function getTranslate(string $phrase, string $languageAlias): ?string;
 
     /**
      * Get an array with original phrases as a key
@@ -23,6 +23,15 @@ interface SourceReaderInterface
      * @return array
      */
     public function getTranslates(array $phrases, string $languageAlias): array;
+
+    /**
+     * Get all translations of one original
+     *
+     * @param string $phrase
+     * @param array|null $languagesAliases - leave "null" to get all languages
+     * @return array
+     */
+    public function getAllOriginalTranslates(string $phrase, ?array $languagesAliases = null): array;
 
     /**
      * @param string[] $phrases
