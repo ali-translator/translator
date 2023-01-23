@@ -60,6 +60,7 @@ class MySqlSource implements SourceInterface
      */
     public function getTranslates(array $phrases, string $languageAlias): array
     {
+        $phrases = array_filter($phrases); // remove empty(and null) phrases
         if (!$phrases) {
             return [];
         }
