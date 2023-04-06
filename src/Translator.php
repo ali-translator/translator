@@ -64,7 +64,7 @@ class Translator implements TranslatorInterface
                 if ($phrase === null) {
                     continue;
                 }
-                $translatePhrasePacket->addTranslate($phrase, null);
+                $translatePhrasePacket->addTranslate($phrase, $phrase);
             }
 
             return $translatePhrasePacket;
