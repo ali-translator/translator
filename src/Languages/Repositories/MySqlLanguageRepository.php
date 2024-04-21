@@ -12,15 +12,8 @@ use \PDO;
 
 class MySqlLanguageRepository implements LanguageRepositoryInterface
 {
-    /**
-     * @var PDO
-     */
-    protected $pdo;
-
-    /**
-     * @var string
-     */
-    protected $languageTableName;
+    protected PDO $pdo;
+    protected string $languageTableName;
 
     /**
      * @var string|LanguageInterface|LanguageConstructorInterface
@@ -58,11 +51,7 @@ class MySqlLanguageRepository implements LanguageRepositoryInterface
         return $statement->execute();
     }
 
-    /**
-     * @param string $alias
-     * @return LanguageInterface|null
-     */
-    public function find(string $alias)
+    public function find(string $alias): ?LanguageInterface
     {
         $statement = $this->pdo->prepare('
                 SELECT * FROM `' . $this->languageTableName . '` WHERE alias=:alias LIMIT 1
@@ -78,11 +67,13 @@ class MySqlLanguageRepository implements LanguageRepositoryInterface
         return $this->generateLanguageObject($languageData);
     }
 
-    /**
-     * @param string $alias
-     * @return LanguageInterface|null
-     */
-    public function findByIsoCode(string $isoCode)
+
+    public function findAllByAliases(array $aliases): array
+    {
+        return $this->findAllByColumn('alias', $aliases);
+    }
+
+    public function findByIsoCode(string $isoCode): ?LanguageInterface
     {
         $statement = $this->pdo->prepare('
                 SELECT * FROM `' . $this->languageTableName . '` WHERE iso_code=:isoCode LIMIT 1
@@ -98,9 +89,14 @@ class MySqlLanguageRepository implements LanguageRepositoryInterface
         return $this->generateLanguageObject($languageData);
     }
 
+    public function findAllByIsoCodes(array $isoCodes): array
+    {
+        return $this->findAllByColumn('iso_code', $isoCodes);
+    }
+
     /**
      * @param bool $onlyActive
-     * @return LanguageInterface[]|array
+     * @return LanguageInterface[]
      */
     public function getAll(bool $onlyActive): array
     {
@@ -134,10 +130,34 @@ class MySqlLanguageRepository implements LanguageRepositoryInterface
         return $languages;
     }
 
-    /**
-     * @param array $languageData
-     * @return LanguageInterface
-     */
+    protected function findAllByColumn(string $columnName, array $columnValues): array
+    {
+        if (empty($columnValues)) {
+            return [];
+        }
+
+        $placeholders = implode(',', array_fill(0, count($columnValues), '?'));
+        $statement = $this->pdo->prepare("SELECT * FROM `{$this->languageTableName}` WHERE {$columnName} IN ({$placeholders})");
+        foreach ($columnValues as $index => $columnValue) {
+            $statement->bindValue($index + 1, $columnValue);
+        }
+
+        $statement->execute();
+        $results = $statement->fetchAll();
+
+        if (!$results) {
+            return [];
+        }
+
+        // Convert result data into LanguageInterface objects
+        $languages = [];
+        foreach ($results as $languageData) {
+            $languages[] = $this->generateLanguageObject($languageData);
+        }
+
+        return $languages;
+    }
+
     protected function generateLanguageObject(array $languageData): LanguageInterface
     {
         if (isset($languageData['additional_information'])) {

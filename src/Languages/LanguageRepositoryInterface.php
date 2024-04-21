@@ -6,17 +6,21 @@ interface LanguageRepositoryInterface
 {
     public function save(LanguageInterface $language, bool $isActive): bool;
 
-    /**
-     * @param string $alias
-     * @return null|LanguageInterface
-     */
-    public function find(string $alias);
+    public function find(string $alias): ?LanguageInterface;
 
     /**
-     * @param string $alias
-     * @return null|LanguageInterface
+     * @param string[] $aliases
+     * @return LanguageInterface[]
      */
-    public function findByIsoCode(string $isoCode);
+    public function findAllByAliases(array $aliases): array;
+
+    public function findByIsoCode(string $isoCode): ?LanguageInterface;
+
+    /**
+     * @param string[] $isoCodes
+     * @return LanguageInterface[]
+     */
+    public function findAllByIsoCodes(array $isoCodes): array;
 
     /**
      * @param bool $onlyActive
@@ -29,8 +33,5 @@ interface LanguageRepositoryInterface
      */
     public function getInactiveLanguages(): array;
 
-    /**
-     * @return LanguageRepositoryInstallerInterface
-     */
     public function generateInstaller(): LanguageRepositoryInstallerInterface;
 }

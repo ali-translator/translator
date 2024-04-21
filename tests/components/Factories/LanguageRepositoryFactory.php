@@ -5,28 +5,28 @@ namespace ALI\Translator\Tests\components\Factories;
 use ALI\Translator\Languages\LanguageRepositoryInterface;
 use ALI\Translator\Languages\Repositories\ArrayLanguageRepository;
 use ALI\Translator\Languages\Repositories\MySqlLanguageRepository;
-use ALI\Translator\Source\SourceInterface;
+use Generator;
+use RuntimeException;
 
 class LanguageRepositoryFactory
 {
     const TYPE_MYSQL = 'mysql';
     const TYPE_ARRAY = 'array';
 
-    public static $allTypes = [self::TYPE_MYSQL, self::TYPE_ARRAY];
+    public static array  $allTypes = [self::TYPE_MYSQL, self::TYPE_ARRAY];
 
     /**
-     * @param $originalLanguageAlias
      * @param bool $recreate
-     * @return \Generator|SourceInterface[]
+     * @return Generator|LanguageRepositoryInterface[]
      */
-    public function iterateAllRepository($originalLanguageAlias, $recreate = true)
+    public function iterateAllRepository(bool $recreate = true): Generator
     {
         foreach (static::$allTypes as $type) {
             yield $this->generateRepository($type, $recreate);
         }
     }
 
-    public function generateRepository(string $type, $withDestroy = true)
+    public function generateRepository(string $type, $withDestroy = true): LanguageRepositoryInterface
     {
         switch ($type) {
             case self::TYPE_ARRAY:
@@ -35,6 +35,8 @@ class LanguageRepositoryFactory
             case self::TYPE_MYSQL:
                 $repository = new MySqlLanguageRepository((new PdoFactory())->generate());
                 break;
+            default:
+                throw new RuntimeException('Unsupported type: ' . $type);
         }
 
         $this->install($repository, $withDestroy);

@@ -5,20 +5,18 @@ namespace ALI\Translator\Tests\unit\Languages;
 use ALI\Translator\Languages\Language;
 use ALI\Translator\Languages\LanguageInterface;
 use ALI\Translator\Tests\components\Factories\LanguageRepositoryFactory;
-use ALI\Translator\Tests\components\Factories\LanguagesEnum;
 use PHPUnit\Framework\TestCase;
 
 class LanguageRepositoryTest extends TestCase
 {
     public function test()
     {
-        $originalLanguage = LanguagesEnum::ORIGINAL_LANGUAGE_ALIAS;
-        foreach ((new LanguageRepositoryFactory())->iterateAllRepository($originalLanguage) as $languageRepository) {
+        foreach ((new LanguageRepositoryFactory())->iterateAllRepository() as $languageRepository) {
 
             self::assertEquals(true, $languageRepository->generateInstaller()->isInstalled());
 
             $additionalUKInformation = ['is_the_best_language' => true];
-            $languageUk = new Language('uk', 'Ukraine', 'ua' , $additionalUKInformation);
+            $languageUk = new Language('uk', 'Ukraine', 'ua', $additionalUKInformation);
             $languageRepository->save($languageUk, true);
             $languageEn = new Language('en', 'English');
             $languageRepository->save($languageEn, false);
@@ -38,6 +36,14 @@ class LanguageRepositoryTest extends TestCase
             $existedLanguageEn = $languageRepository->findByIsoCode($languageEn->getIsoCode());
             self::assertEquals($languageEn, $existedLanguageEn);
             self::assertEquals([], $existedLanguageEn->getAdditionalInformation());
+
+            // Multiple searching
+            self::assertEquals([], $languageRepository->findAllByAliases([]));
+            self::assertEquals([], $languageRepository->findAllByIsoCodes([]));
+            self::assertEquals([$languageUk], $languageRepository->findAllByAliases([$languageUk->getAlias()]));
+            self::assertEquals([$languageUk], $languageRepository->findAllByIsoCodes([$languageUk->getIsoCode()]));
+            self::assertCount(2, $languageRepository->findAllByAliases([$languageUk->getAlias(), $languageEn->getAlias()]));
+            self::assertCount(2, $languageRepository->findAllByIsoCodes([$languageUk->getIsoCode(), $languageEn->getIsoCode()]));
         }
     }
 }

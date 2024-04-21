@@ -7,7 +7,7 @@ interface LanguageConstructorInterface
     public function __construct(
         string $isoCode,
         string $title = '',
-               $alias = null,
-        array  $additionalInformation = []
+        ?string $alias = null,
+        array $additionalInformation = []
     );
 }

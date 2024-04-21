@@ -10,7 +10,7 @@ use ALI\Translator\Languages\Repositories\ArrayLanguageRepository;
 class ArrayLanguageRepositoryFactory
 {
     /**
-     * languagesData : ['isoCode'=>'Title', 'isoCode'=> [ 'title'=>'Title', 'alias' => 'Alias','additionalInformation' => []], ...]
+     * languagesData: ['isoCode'=>'Title', 'isoCode'=> [ 'title'=>'Title', 'alias' => 'Alias','additionalInformation' => []], ...]
      *
      * @param array $activeLanguagesData
      * @param array $inActiveLanguagesData

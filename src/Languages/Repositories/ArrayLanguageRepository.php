@@ -12,18 +12,15 @@ class ArrayLanguageRepository implements LanguageRepositoryInterface
     /**
      * @var LanguageInterface[]
      */
-    protected $activeLanguages = [];
+    protected array $activeLanguages = [];
 
     /**
      * @var LanguageInterface[]
      */
-    protected $inactiveLanguages = [];
+    protected array $inactiveLanguages = [];
 
-    protected $isoCodeVsAlias = [];
+    protected array $isoCodeVsAlias = [];
 
-    /**
-     * @inheritDoc
-     */
     public function save(LanguageInterface $language, bool $isActive): bool
     {
         $this->isoCodeVsAlias[$language->getIsoCode()] = $language->getAlias();
@@ -47,7 +44,7 @@ class ArrayLanguageRepository implements LanguageRepositoryInterface
      * @param string $alias
      * @return LanguageInterface|null
      */
-    public function find(string $alias)
+    public function find(string $alias): ?LanguageInterface
     {
         if (isset($this->activeLanguages[$alias])) {
             return $this->activeLanguages[$alias];
@@ -61,10 +58,24 @@ class ArrayLanguageRepository implements LanguageRepositoryInterface
     }
 
     /**
+     * @param string[] $aliases
+     * @return LanguageInterface[]
+     */
+    public function findAllByAliases(array $aliases): array
+    {
+        $languages = [];
+        foreach ($aliases as $alias) {
+            $languages[] = $this->find($alias);
+        }
+
+        return $languages;
+    }
+
+    /**
      * @param string $isoCode
      * @return LanguageInterface|null
      */
-    public function findByIsoCode(string $isoCode)
+    public function findByIsoCode(string $isoCode): ?LanguageInterface
     {
         $languageAlias = $this->isoCodeVsAlias[$isoCode] ?? null;
         if (!$languageAlias) {
@@ -72,6 +83,20 @@ class ArrayLanguageRepository implements LanguageRepositoryInterface
         }
 
         return $this->find($languageAlias);
+    }
+
+    /**
+     * @param string[] $isoCodes
+     * @return LanguageInterface[]
+     */
+    public function findAllByIsoCodes(array $isoCodes): array
+    {
+        $languages = [];
+        foreach ($isoCodes as $isoCode) {
+            $languages[] = $this->findByIsoCode($isoCode);
+        }
+
+        return $languages;
     }
 
     /**

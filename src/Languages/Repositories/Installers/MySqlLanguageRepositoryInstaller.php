@@ -7,15 +7,8 @@ use PDO;
 
 class MySqlLanguageRepositoryInstaller implements LanguageRepositoryInstallerInterface
 {
-    /**
-     * @var PDO
-     */
-    protected $pdo;
-
-    /**
-     * @var string
-     */
-    protected $languageTableName;
+    protected PDO $pdo;
+    protected string $languageTableName;
 
     public function __construct(PDO $pdo, string $languageTableName = 'ali_language')
     {

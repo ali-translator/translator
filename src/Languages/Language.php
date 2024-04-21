@@ -4,31 +4,16 @@ namespace ALI\Translator\Languages;
 
 class Language implements LanguageInterface, LanguageConstructorInterface
 {
-    /**
-     * @var string
-     */
-    protected $isoCode;
-
-    /**
-     * @var string
-     */
-    protected $title;
-
-    /**
-     * @var string
-     */
-    protected $alias;
-
-    /**
-     * @var array
-     */
-    private $additionalInformation;
+    protected string $isoCode;
+    protected string $title;
+    protected string $alias;
+    private array $additionalInformation;
 
     public function __construct(
         string $isoCode,
         string $title = '',
-               $alias = null,
-        array  $additionalInformation = []
+        ?string $alias = null,
+        array $additionalInformation = []
     )
     {
         $this->isoCode = $isoCode;
