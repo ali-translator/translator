@@ -49,7 +49,7 @@ class SourceTester
         $originals = [];
         $translations = [];
         for ($i = 0; $i < 100; $i++) {
-            $translationContent = microtime(true) . rand(0, 100);
+            $translationContent = microtime(true) . rand(0, 10000000);
             $originalContent = $firstBytes . $translationContent;
             if ($i === 50) {
                 $textForSearching = $originalContent;

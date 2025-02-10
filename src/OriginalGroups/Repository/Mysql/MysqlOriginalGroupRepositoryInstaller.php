@@ -6,19 +6,13 @@ use ALI\Translator\OriginalGroups\OriginalGroupRepositoryInstallerInterface;
 
 class MysqlOriginalGroupRepositoryInstaller implements OriginalGroupRepositoryInstallerInterface
 {
-    /**
-     * @var MySqlRepositoryConfig
-     */
-    protected $mySqlRepositoryConfig;
+    protected MySqlRepositoryConfig $mySqlRepositoryConfig;
 
     public function __construct(MySqlRepositoryConfig $mySqlRepositoryConfig)
     {
         $this->mySqlRepositoryConfig = $mySqlRepositoryConfig;
     }
 
-    /**
-     * @return bool
-     */
     public function isInstalled(): bool
     {
         $query = $this->mySqlRepositoryConfig->getPdo()->prepare(
@@ -30,9 +24,6 @@ class MysqlOriginalGroupRepositoryInstaller implements OriginalGroupRepositoryIn
         return (int)$query->fetchColumn() === 1;
     }
 
-    /**
-     * Install
-     */
     public function install()
     {
         $sqlCommand = 'CREATE TABLE ' . $this->mySqlRepositoryConfig->getTableName() . ' (
@@ -52,7 +43,7 @@ ADD UNIQUE INDEX UK_aog__original__language (original_id, language_alias, group_
     }
 
     /**
-     * Destroy MySql ALI schema
+     * Destroy MySql schema
      */
     public function destroy()
     {

@@ -10,13 +10,8 @@ class CollectorMissingTranslatesCatcher
     /**
      * @var OriginalPhraseCollection[]
      */
-    private $originalPhraseCollections = [];
+    private array $originalPhraseCollections = [];
 
-    /**
-     * @param string $languageAlias
-     * @param string $searchPhrase
-     * @param TranslatorInterface $translator
-     */
     public function __invoke(string $languageAlias, string $searchPhrase, TranslatorInterface $translator)
     {
         $this->getOriginalPhraseCollectionsByLanguageAlias($languageAlias)->add($searchPhrase);
@@ -30,10 +25,6 @@ class CollectorMissingTranslatesCatcher
         return $this->originalPhraseCollections;
     }
 
-    /**
-     * @param string $languageAlias
-     * @return OriginalPhraseCollection|mixed
-     */
     public function getOriginalPhraseCollectionsByLanguageAlias(string $languageAlias): OriginalPhraseCollection
     {
         if (!isset($this->originalPhraseCollections[$languageAlias])) {

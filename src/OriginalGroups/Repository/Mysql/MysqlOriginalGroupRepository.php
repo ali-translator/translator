@@ -10,20 +10,9 @@ use PDOStatement;
 
 class MysqlOriginalGroupRepository implements OriginalGroupRepositoryInterface
 {
-    /**
-     * @var MySqlRepositoryConfig
-     */
-    protected $mySqlRepositoryConfig;
+    protected MySqlRepositoryConfig $mySqlRepositoryConfig;
+    protected SourceInterface $translatorSource;
 
-    /**
-     * @var SourceInterface
-     */
-    protected $translatorSource;
-
-    /**
-     * @param MySqlRepositoryConfig $mySqlRepositoryConfig
-     * @param SourceInterface $translatorSource
-     */
     public function __construct(MySqlRepositoryConfig $mySqlRepositoryConfig, SourceInterface $translatorSource)
     {
         $this->mySqlRepositoryConfig = $mySqlRepositoryConfig;
@@ -41,7 +30,7 @@ class MysqlOriginalGroupRepository implements OriginalGroupRepositoryInterface
             return;
         }
 
-        list($valuesQuery, $valuesForWhereBinding) = $this->prepareParamsForInserQuery($originalsIds, $groups);
+        list($valuesQuery, $valuesForWhereBinding) = $this->prepareParamsForInsertQuery($originalsIds, $groups);
 
         $statement = $this->mySqlRepositoryConfig->getPdo()->prepare(
             'INSERT IGNORE  INTO `' . $this->mySqlRepositoryConfig->getTableName() . '`
@@ -54,11 +43,7 @@ class MysqlOriginalGroupRepository implements OriginalGroupRepositoryInterface
         $statement->execute();
     }
 
-    /**
-     * @param $valuesForWhereBinding
-     * @param PDOStatement $dataQuery
-     */
-    private function bindParams($valuesForWhereBinding, PDOStatement $dataQuery)
+    private function bindParams(array $valuesForWhereBinding, PDOStatement $dataQuery)
     {
         foreach ($valuesForWhereBinding as $dataForBinding) {
             $groupKey = $dataForBinding['groupKey'];
@@ -97,12 +82,12 @@ class MysqlOriginalGroupRepository implements OriginalGroupRepositoryInterface
         return $originals;
     }
 
-    public function getGroups(array $originalsContents): array
+    public function getGroups(array $originalsContent): array
     {
-        if (!$originalsContents) {
+        if (!$originalsContent) {
             return [];
         }
-        $originalsId = $this->getTranslatorSource()->getOriginalsIds($originalsContents);
+        $originalsId = $this->getTranslatorSource()->getOriginalsIds($originalsContent);
         if (!$originalsId) {
             return [];
         }
@@ -202,7 +187,7 @@ class MysqlOriginalGroupRepository implements OriginalGroupRepositoryInterface
         return $this->translatorSource;
     }
 
-    protected function prepareInCondition(array $data, string $alias)
+    protected function prepareInCondition(array $data, string $alias): array
     {
         $queryParts = [];
         $valuesForBinding = [];
@@ -218,7 +203,7 @@ class MysqlOriginalGroupRepository implements OriginalGroupRepositoryInterface
         return [$queryParts, $valuesForBinding];
     }
 
-    protected function prepareParamsForInserQuery(array $originalsId, array $groups)
+    protected function prepareParamsForInsertQuery(array $originalsId, array $groups): array
     {
         $queryParts = [];
         $valuesForWhereBinding = [];
