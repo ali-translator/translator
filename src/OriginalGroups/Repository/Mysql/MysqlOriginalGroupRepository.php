@@ -64,19 +64,33 @@ class MysqlOriginalGroupRepository implements OriginalGroupRepositoryInterface
     {
         $tableName = $this->mySqlRepositoryConfig->getTableName();
         $dataQuery = $this->mySqlRepositoryConfig->getPdo()->prepare(
-            'SELECT `original_content`
+            'SELECT `original_id`
                 FROM `' . $tableName . '`
             WHERE `language_alias`=:originalLanguageAlias AND `group_alias`=:groupAlias
-            LIMIT ' . $limit . ',' . $offset
+            LIMIT ' . $offset . ',' . $limit
         );
+        $originalLanguageAlias = $this->translatorSource->getOriginalLanguageAlias();
         $dataQuery->bindParam('originalLanguageAlias', $originalLanguageAlias, PDO::PARAM_STR);
         $dataQuery->bindParam('groupAlias', $groupAlias, PDO::PARAM_STR);
 
         $dataQuery->execute();
 
-        $originals = [];
+        $originalIds = [];
         while ($existPhrase = $dataQuery->fetch(PDO::FETCH_ASSOC)) {
-            $originals[] = $existPhrase['original_content'];
+            $originalIds[] = (int)$existPhrase['original_id'];
+        }
+
+        if (!$originalIds) {
+            return [];
+        }
+
+        $originalsById = $this->translatorSource->getOriginalsByIds($originalIds);
+
+        $originals = [];
+        foreach ($originalIds as $id) {
+            if (isset($originalsById[$id])) {
+                $originals[] = $originalsById[$id];
+            }
         }
 
         return $originals;

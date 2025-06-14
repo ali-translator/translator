@@ -9,5 +9,5 @@ interface TranslatePhraseDecorator
      * @param string $translate
      * @return string - translate string
      */
-    public function decorate($original, $translate);
+    public function decorate($original, $translate): string;
 }

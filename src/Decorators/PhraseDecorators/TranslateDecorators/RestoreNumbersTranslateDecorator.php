@@ -9,7 +9,7 @@ class RestoreNumbersTranslateDecorator implements TranslatePhraseDecorator
      * @param string $translate
      * @return string
      */
-    public function decorate($original, $translate)
+    public function decorate($original, $translate): string
     {
         preg_match_all('#(?:[\d])+#u', $original, $symbols);
         preg_match_all('#(?:[\d])+#u', $translate, $tSymbols);

@@ -23,7 +23,7 @@ $source = new MySqlSource($connection, $originalLanguageAlias);
 
 // Install source
 $installer = $source->generateInstaller();
-if($installer->isInstalled()){
+if (!$installer->isInstalled()) {
     $installer->install();
     // $installer->destroy();
 }
@@ -84,7 +84,7 @@ echo MessageFormatter::formatMessage('ru_RU', $translatedPhrase, [
 ### Events 
 
 * Catchers of missing translations
-Packet allow set catchers of phrases without translation, which will run after `tranlsate` method failing
+Packet allow set catchers of phrases without translation, which will run after `translate` method failing
 
 ```php
 use ALI\Translator\TranslatorInterface;

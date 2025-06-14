@@ -24,7 +24,7 @@ class TranslatePhraseDecoratorManager implements TranslatePhraseDecorator
      * @param string $translate
      * @return string - translate string
      */
-    public function decorate($original, $translate)
+    public function decorate($original, $translate): string
     {
         foreach ($this->translateDecorators as $translateDecorator) {
             $translate = $translateDecorator->decorate($original, $translate);
