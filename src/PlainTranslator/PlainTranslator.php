@@ -68,7 +68,7 @@ class PlainTranslator implements PlainTranslatorInterface
         return $this->translator->translate($this->originalLanguageAlias, $this->translationLanguageAlias, $phrase, $withTranslationFallback);
     }
 
-    public function saveTranslate(string $original,string $translate, string $translationLanguageAlias = null): void
+    public function saveTranslate(string $original, string $translate, ?string $translationLanguageAlias = null): void
     {
         $translationLanguageAlias = $translationLanguageAlias ?: $this->translationLanguageAlias;
 

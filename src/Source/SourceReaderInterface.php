@@ -45,5 +45,5 @@ interface SourceReaderInterface
      * @param int|null $limit
      * @return OriginalPhraseCollection
      */
-    public function getOriginalsWithoutTranslate(string $translationLanguageAlias, int $offset = 0, int $limit = null): OriginalPhraseCollection;
+    public function getOriginalsWithoutTranslate(string $translationLanguageAlias, int $offset = 0, ?int $limit = null): OriginalPhraseCollection;
 }

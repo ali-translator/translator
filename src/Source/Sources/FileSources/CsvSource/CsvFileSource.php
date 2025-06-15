@@ -119,7 +119,7 @@ class CsvFileSource extends FileSourceAbstract
 
         foreach ($translatesData as $original => $translate) {
             $id = $this->getNextIncrementId();
-            fputcsv($fileResource, [$original, $translate, $id], $this->delimiter);
+            fputcsv($fileResource, [$original, $translate, $id], $this->delimiter, '"', '\\');
         }
 
         fclose($fileResource);
@@ -257,7 +257,7 @@ class CsvFileSource extends FileSourceAbstract
      * @throws FileReadPermissionsException
      * @throws UnsupportedLanguageAliasException
      */
-    public function getOriginalsWithoutTranslate(string $translationLanguageAlias, int $offset = 0, int $limit = null): OriginalPhraseCollection
+    public function getOriginalsWithoutTranslate(string $translationLanguageAlias, int $offset = 0, ?int $limit = null): OriginalPhraseCollection
     {
         $this->preloadTranslates($translationLanguageAlias);
 
@@ -313,7 +313,7 @@ class CsvFileSource extends FileSourceAbstract
             }
 
             $fileResource = fopen($languageFile, 'rb');
-            while (($data = fgetcsv($fileResource, 0, $this->delimiter)) !== false) {
+            while (($data = fgetcsv($fileResource, 0, $this->delimiter, '"', '\\')) !== false) {
                 yield $data;
             }
             fclose($fileResource);

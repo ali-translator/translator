@@ -398,7 +398,7 @@ class MySqlSource implements SourceInterface
         return new MySqlSourceInstaller($this->pdo, $this->originalTableName, $this->translateTableName);
     }
 
-    public function getOriginalsWithoutTranslate(string $translationLanguageAlias, int $offset = 0, int $limit = null): OriginalPhraseCollection
+    public function getOriginalsWithoutTranslate(string $translationLanguageAlias, int $offset = 0, ?int $limit = null): OriginalPhraseCollection
     {
         $originalsWithoutTranslationCollection = new OriginalPhraseCollection($this->originalLanguageAlias);
 

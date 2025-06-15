@@ -9,7 +9,7 @@ interface TranslatorInterface
 {
     public function getSource(
         string $originalLanguageAlias,
-        string $translationLanguageAlias = null
+        ?string $translationLanguageAlias = null
     ): ?SourceInterface;
 
     /**
@@ -44,6 +44,6 @@ interface TranslatorInterface
     public function delete(
         string $originalLanguageAlias,
         string $original,
-        string $translationLanguageAlias = null
+        ?string $translationLanguageAlias = null
     ): void;
 }

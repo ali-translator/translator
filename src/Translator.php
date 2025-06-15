@@ -33,7 +33,7 @@ class Translator implements TranslatorInterface
         return $this->sourceCollection;
     }
 
-    public function getSource(string $originalLanguageAlias,string $translationLanguageAlias = null): SourceInterface
+    public function getSource(string $originalLanguageAlias, ?string $translationLanguageAlias = null): SourceInterface
     {
         $source = $this->sourceCollection->getSource($originalLanguageAlias, $translationLanguageAlias);
         if (!$source) {
@@ -136,7 +136,7 @@ class Translator implements TranslatorInterface
     public function delete(
         string $originalLanguageAlias,
         string $original,
-        string $translationLanguageAlias = null
+        ?string $translationLanguageAlias = null
     ): void
     {
         $this->getSource($originalLanguageAlias, $translationLanguageAlias)->delete($original);
