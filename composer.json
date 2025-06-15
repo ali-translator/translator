@@ -25,7 +25,7 @@
         "source": "https://github.com/ali-translator/translator"
     },
     "require": {
-        "php": ">=7.4"
+        "php": ">=7.4 <8.5"
     },
     "autoload": {
         "psr-4": {

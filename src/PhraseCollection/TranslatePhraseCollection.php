@@ -4,6 +4,7 @@ namespace ALI\Translator\PhraseCollection;
 
 use ArrayIterator;
 use IteratorAggregate;
+use Traversable;
 
 class TranslatePhraseCollection implements IteratorAggregate
 {
@@ -123,7 +124,7 @@ class TranslatePhraseCollection implements IteratorAggregate
     /**
      * @inheritDoc
      */
-    public function getIterator()
+    public function getIterator(): Traversable
     {
         return new ArrayIterator($this->originalsWithTranslate);
     }
