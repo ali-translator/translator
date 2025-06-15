@@ -19,8 +19,8 @@ class PhraseTranslatorDecorator implements TranslatorInterface
 
     public function __construct(
         TranslatorInterface $translator,
-        OriginalPhraseDecoratorManager $originalDecoratorManager = null,
-        TranslatePhraseDecoratorManager $translateDecoratorManager = null
+        ?OriginalPhraseDecoratorManager $originalDecoratorManager = null,
+        ?TranslatePhraseDecoratorManager $translateDecoratorManager = null
     )
     {
         $this->translator = $translator;
@@ -66,13 +66,13 @@ class PhraseTranslatorDecorator implements TranslatorInterface
         $this->translator->saveTranslate($originalLanguageAlias, $translationLanguageAlias, $original, $translate);
     }
 
-    public function delete(string $originalLanguageAlias, string $original, string $translationLanguageAlias = null): void
+    public function delete(string $originalLanguageAlias, string $original, ?string $translationLanguageAlias = null): void
     {
         $original = $this->originalDecoratorManager->decorate($original);
         $this->translator->delete($originalLanguageAlias, $original, $translationLanguageAlias);
     }
 
-    public function getSource(string $originalLanguageAlias,string $translationLanguageAlias = null): SourceInterface
+    public function getSource(string $originalLanguageAlias, ?string $translationLanguageAlias = null): SourceInterface
     {
         return $this->translator->getSource($originalLanguageAlias, $translationLanguageAlias);
     }

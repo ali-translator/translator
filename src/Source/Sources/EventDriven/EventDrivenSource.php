@@ -134,7 +134,7 @@ class EventDrivenSource implements SourceInterface
         return $this->innerWriter->getExistOriginals($phrases);
     }
 
-    public function getOriginalsWithoutTranslate(string $translationLanguageAlias, int $offset = 0, int $limit = null): OriginalPhraseCollection
+    public function getOriginalsWithoutTranslate(string $translationLanguageAlias, int $offset = 0, ?int $limit = null): OriginalPhraseCollection
     {
         return $this->innerWriter->getOriginalsWithoutTranslate($translationLanguageAlias, $offset, $limit);
     }

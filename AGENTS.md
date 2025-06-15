@@ -37,6 +37,9 @@ php8.4 vendor/bin/phpunit --configuration phpunit.xml.dist # or php8.3 if 8.4 no
 php7.4 vendor/bin/phpunit --configuration phpunit.xml.dist
 ```
 
+Rules of design:
+- The language of the project is English, so all comments, branch names, and documentation are written in English
+
 Package Notes
 -------------
 - The project uses PHPUnit 9.x and requires the `dom`, `json`, `libxml`, `mbstring`, `tokenizer`, and `xmlwriter` extensions.
