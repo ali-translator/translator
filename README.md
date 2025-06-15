@@ -4,6 +4,8 @@
 
 ## Installation
 
+Supports PHP 7.4 through 8.4.
+
 ```bash
 $ composer require ali-translator/translator
 ```

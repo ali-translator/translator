@@ -84,9 +84,9 @@ class OriginalPhraseCollection implements IteratorAggregate
     }
 
     /**
-     * @return IteratorIterator|Traversable
+     * @return Traversable
      */
-    public function getIterator()
+    public function getIterator(): Traversable
     {
         return new ArrayIterator($this->originals);
     }
